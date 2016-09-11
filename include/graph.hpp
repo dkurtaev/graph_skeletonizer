@@ -14,6 +14,9 @@ class Graph {
 
    ~Graph();
 
+   // Writing .dot file for graph visualization.
+   void WriteDot(const std::string& file_path);
+
  private:
    unsigned n_nodes_;
    // Contained weighs wij (between i and j nodes):

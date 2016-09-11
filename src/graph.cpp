@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <fstream>
+#include <sstream>
 
 #include <glog/logging.h>
 
@@ -29,4 +30,21 @@ Graph::Graph(const std::string& file_path) {
 
 Graph::~Graph() {
   delete[] weights_;
+}
+
+void Graph::WriteDot(const std::string& file_path) {
+  std::ofstream file(file_path.c_str());
+  file << "graph {\n";
+
+  unsigned offset = 0;
+  for (unsigned i = 1; i < n_nodes_; ++i) {
+    for (unsigned j = i; j < n_nodes_; ++j) {
+      std::ostringstream ss;
+      ss << i << "--" << j + 1 << "[label=\"" << weights_[offset] << "\"];\n";
+      file << ss.str();
+      ++offset;
+    }
+  }
+  file << "}\n";
+  file.close();
 }
