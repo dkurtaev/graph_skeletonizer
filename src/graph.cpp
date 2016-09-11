@@ -5,14 +5,21 @@
 
 #include <fstream>
 #include <sstream>
+#include <string>
 
-#include <glog/logging.h>
+#include "glog/logging.h"
 
 Graph::Graph(unsigned n_nodes, float* weights)
   : n_nodes_(n_nodes) {
   const unsigned n_weights = n_nodes * (n_nodes - 1) / 2;
   weights_ = new float[n_weights];
-  memcpy(weights_, weights, sizeof(float) * n_weights);
+  if (weights != 0) {
+    memcpy(weights_, weights, sizeof(float) * n_weights);
+  } else {
+    for (unsigned i = 0; i < n_weights; ++i) {
+      weights_[i] = static_cast<float>(rand() % 100 + 1) / 100;
+    }
+  }
 }
 
 Graph::Graph(const std::string& file_path) {
