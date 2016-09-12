@@ -7,5 +7,11 @@ set(tests
 foreach(test ${tests})
   get_filename_component(target ${test} NAME_WE)
   add_executable(${target} ${test} main.cpp)
-  target_link_libraries(${target} gtest ${CMAKE_THREAD_LIBS_INIT} pthread ${LIBRARY})
+  target_link_libraries(
+    ${target}
+    gtest
+    ${CMAKE_THREAD_LIBS_INIT}
+    pthread
+    libskeleton
+  )
 endforeach(test)
