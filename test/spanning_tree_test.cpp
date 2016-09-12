@@ -1,5 +1,4 @@
 #include <vector>
-#include <iostream>
 
 #include "gtest/gtest.h"
 
@@ -14,9 +13,9 @@ void GenPath(unsigned n_nodes, std::vector<float>* weights);
 float RandWeight();
 
 TEST(BoruvkaMethod, spanning_tree) {
-  static const unsigned kNumGenerations = 1000;
-  static const unsigned kMinNumNodes = 5;
-  static const unsigned kMaxNumNodes = 10;
+  static const unsigned kNumGenerations = 10000;
+  static const unsigned kMinNumNodes = 3;
+  static const unsigned kMaxNumNodes = 25;
 
   std::vector<float> weights;
   std::vector<unsigned> spanning_tree;
@@ -25,7 +24,6 @@ TEST(BoruvkaMethod, spanning_tree) {
     GenGraph(n_nodes, &weights);
     Graph gr(n_nodes, weights);
     gr.WriteDot("./test.dot");
-    std::cout << iter << std::endl;
     BoruvkaMethod::Process(n_nodes, weights, &spanning_tree);
   }
 }

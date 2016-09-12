@@ -24,7 +24,9 @@ Edge* Skeleton::GetMinimalWeightedEdge() {
   Edge* edge = 0;
   for (unsigned i = 1; i < n_edges; ++i) {
     edge = edges_[i];
-    if (edge->weight < minimal_weighted_edge->weight) {
+    float w1 = edge->weight;
+    float w2 = minimal_weighted_edge->weight;
+    if (w1 < w2 || w1 == w2 && edge->id < minimal_weighted_edge->id) {
       minimal_weighted_edge = edge;
     }
   }
