@@ -3,6 +3,7 @@
 
 #include "gtest/gtest.h"
 
+#include "include/graph.hpp"
 #include "include/boruvka_method.hpp"
 
 void GenGraph(unsigned n_nodes, std::vector<float>* weights);
@@ -15,13 +16,16 @@ float RandWeight();
 TEST(BoruvkaMethod, spanning_tree) {
   static const unsigned kNumGenerations = 1000;
   static const unsigned kMinNumNodes = 5;
-  static const unsigned kMaxNumNodes = 100;
+  static const unsigned kMaxNumNodes = 10;
 
   std::vector<float> weights;
   std::vector<unsigned> spanning_tree;
   for (unsigned iter = 0; iter < kNumGenerations; ++iter) {
     int n_nodes = rand() % (kMaxNumNodes - kMinNumNodes + 1) + kMinNumNodes;
     GenGraph(n_nodes, &weights);
+    Graph gr(n_nodes, weights);
+    gr.WriteDot("./test.dot");
+    std::cout << iter << std::endl;
     BoruvkaMethod::Process(n_nodes, weights, &spanning_tree);
   }
 }

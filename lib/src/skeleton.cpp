@@ -3,11 +3,17 @@
 #include <algorithm>
 #include <vector>
 
+#include "glog/logging.h"
+
 std::vector<Skeleton*> Skeleton::skeletons_;
 
 Skeleton::Skeleton(const std::vector<Edge*>& edges)
   : edges_(edges) {
   skeletons_.push_back(this);
+  for (unsigned i = 0; i < edges.size(); ++i) {
+    CHECK(edges[i]->from == skeletons_.size() - 1 ||
+          edges[i]->to == skeletons_.size() - 1);
+  }
 }
 
 Edge* Skeleton::GetMinimalWeightedEdge() {
@@ -35,6 +41,9 @@ void Skeleton::MergeBy(Edge* merging_edge) {
   Skeleton* first = skeletons_[from_id];
   Skeleton* second = skeletons_[to_id];
 
+  CHECK(from_id != to_id);
+  CHECK(first != second);
+
   std::vector<Edge*> updated_edges;
   unsigned n_edges = first->edges_.size();
   for (unsigned i = 0; i < n_edges; ++i) {
@@ -52,8 +61,17 @@ void Skeleton::MergeBy(Edge* merging_edge) {
     }
   }
 
-  skeletons_[from_id] = first;
-  skeletons_[to_id] = first;
   first->edges_.resize(updated_edges.size());
   std::copy(updated_edges.begin(), updated_edges.end(), first->edges_.begin());
+
+  unsigned n_skeletons = skeletons_.size();
+  for (int i = 0; i < n_skeletons; ++i) {
+    if (skeletons_[i] == first || skeletons_[i] == second) {
+      skeletons_[i] = first;
+    }
+  }
+}
+
+void Skeleton::Reset() {
+  skeletons_.clear();
 }

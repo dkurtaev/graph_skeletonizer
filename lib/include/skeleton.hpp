@@ -26,6 +26,8 @@ class Skeleton {
   // At the end, all pointers are equal (single skeleton).
   static void MergeBy(Edge* merging_edge);
 
+  static void Reset();
+
  private:
   std::vector<Edge*> edges_;
   static std::vector<Skeleton*> skeletons_;
