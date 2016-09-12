@@ -9,6 +9,8 @@ file(GLOB headers "./include/*.hpp")
 include_directories(${CMAKE_SOURCE_DIR})
 
 add_subdirectory("./3rdparty/glog")
+add_subdirectory("./3rdparty/googletest")
+add_subdirectory("./test")
 
 add_executable(${CMAKE_PROJECT_NAME} ${sources} ${headers})
 target_link_libraries(
