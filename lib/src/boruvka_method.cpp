@@ -8,10 +8,14 @@
 
 void BoruvkaMethod::Process(unsigned n_nodes, const std::vector<float>& weights,
                             std::vector<unsigned>* spanning_tree_edges) {
-  Skeleton::Reset();
   spanning_tree_edges->clear();
   std::vector<Edge*> all_edges;  // Store created edges for memory releasing.
   std::vector<Edge*>* edges = new std::vector<Edge*>[n_nodes];
+
+  std::vector<Skeleton*> skeletons(n_nodes);
+  for (unsigned i = 0; i < n_nodes; ++i) {
+    skeletons[i] = new Skeleton();
+  }
 
   unsigned weights_offset = 0;
   for (unsigned i = 0; i < n_nodes - 1; ++i) {
@@ -19,7 +23,7 @@ void BoruvkaMethod::Process(unsigned n_nodes, const std::vector<float>& weights,
       float weight = weights[weights_offset];
       if (weight != 0) {
         unsigned edge_id = weights_offset;
-        Edge* edge = new Edge(edge_id, i, j, weight);
+        Edge* edge = new Edge(edge_id, weight, skeletons[i], skeletons[j]);
         edges[i].push_back(edge);
         edges[j].push_back(edge);
         all_edges.push_back(edge);
@@ -28,9 +32,8 @@ void BoruvkaMethod::Process(unsigned n_nodes, const std::vector<float>& weights,
     }
   }
 
-  std::vector<Skeleton*> skeletons(n_nodes);
   for (unsigned i = 0; i < n_nodes; ++i) {
-    skeletons[i] = new Skeleton(edges[i]);
+    skeletons[i]->SetEdges(edges[i]);
   }
 
   std::vector<Edge*> minimal_weighted_edges;

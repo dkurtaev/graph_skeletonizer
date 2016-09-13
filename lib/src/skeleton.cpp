@@ -5,15 +5,9 @@
 
 #include "glog/logging.h"
 
-std::vector<Skeleton*> Skeleton::skeletons_;
-
-Skeleton::Skeleton(const std::vector<Edge*>& edges)
-  : edges_(edges) {
-  skeletons_.push_back(this);
-  for (unsigned i = 0; i < edges.size(); ++i) {
-    CHECK(edges[i]->from == skeletons_.size() - 1 ||
-          edges[i]->to == skeletons_.size() - 1);
-  }
+void Skeleton::SetEdges(const std::vector<Edge*>& edges) {
+  edges_.resize(edges.size());
+  std::copy(edges.begin(), edges.end(), edges_.begin());
 }
 
 Edge* Skeleton::GetMinimalWeightedEdge() {
@@ -33,24 +27,23 @@ Edge* Skeleton::GetMinimalWeightedEdge() {
   return minimal_weighted_edge;
 }
 
-Edge::Edge(unsigned id, unsigned from, unsigned to, float weight)
-  : id(id), weight(weight), from(from), to(to), processed(false) {}
+Edge::Edge(unsigned id, float weight, Skeleton* from, Skeleton* to)
+  : id(id), weight(weight), processed(false) {
+  skeletons[0] = from;
+  skeletons[1] = to;
+}
 
 void Skeleton::MergeBy(Edge* merging_edge) {
-  const unsigned from_id = merging_edge->from;
-  const unsigned to_id = merging_edge->to;
+  Skeleton* first = merging_edge->skeletons[0];
+  Skeleton* second = merging_edge->skeletons[1];
 
-  Skeleton* first = skeletons_[from_id];
-  Skeleton* second = skeletons_[to_id];
-
-  CHECK(from_id != to_id);
   CHECK(first != second);
 
   std::vector<Edge*> updated_edges;
   unsigned n_edges = first->edges_.size();
   for (unsigned i = 0; i < n_edges; ++i) {
     Edge* edge = first->edges_[i];
-    if (skeletons_[edge->from] != second && skeletons_[edge->to] != second) {
+    if (edge->skeletons[0] != second && edge->skeletons[1] != second) {
       updated_edges.push_back(edge);
     }
   }
@@ -58,22 +51,17 @@ void Skeleton::MergeBy(Edge* merging_edge) {
   n_edges = second->edges_.size();
   for (unsigned i = 0; i < n_edges; ++i) {
     Edge* edge = second->edges_[i];
-    if (skeletons_[edge->from] != first && skeletons_[edge->to] != first) {
+    if (edge->skeletons[0] != first && edge->skeletons[1] != first) {
       updated_edges.push_back(edge);
+    }
+
+    if (edge->skeletons[0] == second) {
+      edge->skeletons[0] = first;
+    } else {
+      edge->skeletons[1] = first;
     }
   }
 
   first->edges_.resize(updated_edges.size());
   std::copy(updated_edges.begin(), updated_edges.end(), first->edges_.begin());
-
-  unsigned n_skeletons = skeletons_.size();
-  for (int i = 0; i < n_skeletons; ++i) {
-    if (skeletons_[i] == first || skeletons_[i] == second) {
-      skeletons_[i] = first;
-    }
-  }
-}
-
-void Skeleton::Reset() {
-  skeletons_.clear();
 }

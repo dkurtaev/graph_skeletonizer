@@ -4,33 +4,30 @@
 #include <vector>
 
 // Edge between spanning trees. Ids of skeleton pointers inside static vector.
+class Skeleton;
 struct Edge {
-  Edge(unsigned id, unsigned from, unsigned to, float weight);
+  Edge(unsigned id, float weight, Skeleton* from, Skeleton* to);
 
   unsigned id;
   float weight;
-  unsigned from;
-  unsigned to;
+  Skeleton* skeletons[2];
   bool processed;
 };
 
 class Skeleton {
  public:
-  explicit Skeleton(const std::vector<Edge*>& edges);
+  void SetEdges(const std::vector<Edge*>& edges);
 
   Edge* GetMinimalWeightedEdge();
 
-  // Merge two skeletons by minimal weighted edge. Both pointers inside
-  // [skeletons_] vector replaced to similar pointer (once of them) with
-  // merged edges.
+  // Merge two skeletons by minimal weighted edge.
+  // Pointer to one of them replaced to second pointer (both pointers has
+  // similar value after merge).
   // At the end, all pointers are equal (single skeleton).
   static void MergeBy(Edge* merging_edge);
 
-  static void Reset();
-
  private:
   std::vector<Edge*> edges_;
-  static std::vector<Skeleton*> skeletons_;
 };
 
 #endif  // INCLUDE_SKELETON_HPP_
