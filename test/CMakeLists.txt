@@ -1,7 +1,7 @@
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty")
 
 set(tests
-  spanning_tree_test.cpp
+  boruvka_method_test.cpp
   random_spanning_tree_test.cpp
 )
 
