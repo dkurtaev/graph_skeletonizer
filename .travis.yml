@@ -1,0 +1,27 @@
+language: cpp
+
+notifications:
+  email: false
+
+sudo: required
+
+compiler: gcc
+
+os: linux
+
+branches:
+  only:
+    - master
+
+addons:
+  apt:
+    sources:
+      - george-edison55-precise-backports
+    packages:
+      - cmake
+      - cmake-data
+
+script:
+  - mkdir build && cd build
+  - cmake .. && make -j8
+  - find ./bin/ -name *_test -exec {} \;
