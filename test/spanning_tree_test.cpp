@@ -4,6 +4,9 @@
 
 #include "include/graph.hpp"
 #include "include/boruvka_method.hpp"
+#include "include/random_spanning_tree.hpp"
+
+#include <iostream>
 
 void GenGraph(unsigned n_nodes, std::vector<float>* weights);
 
@@ -11,6 +14,9 @@ void GenGraph(unsigned n_nodes, std::vector<float>* weights);
 void GenPath(unsigned n_nodes, std::vector<float>* weights);
 
 float RandWeight();
+
+float ComputeTreeCost(const std::vector<float>& weights,
+                      const std::vector<unsigned>& spanning_tree);
 
 TEST(BoruvkaMethod, spanning_tree) {
   static const unsigned kNumGenerations = 10000;
@@ -24,7 +30,16 @@ TEST(BoruvkaMethod, spanning_tree) {
     GenGraph(n_nodes, &weights);
     Graph gr(n_nodes, weights);
     gr.WriteDot("./test.dot");
+
     BoruvkaMethod::Process(n_nodes, weights, &spanning_tree);
+    ASSERT_EQ(spanning_tree.size(), n_nodes - 1);
+    float boruvka_spanning_tree_cost = ComputeTreeCost(weights, spanning_tree);
+
+    RandomSpanningTree::Process(n_nodes, weights, &spanning_tree);
+    ASSERT_EQ(spanning_tree.size(), n_nodes - 1);
+    float random_spanning_tree_cost = ComputeTreeCost(weights, spanning_tree);
+
+    ASSERT_LE(boruvka_spanning_tree_cost, random_spanning_tree_cost);
   }
 }
 
@@ -70,4 +85,14 @@ void GenPath(unsigned n_nodes, std::vector<float>* weights) {
 
 float RandWeight() {
   return static_cast<float>(rand() % 100 + 1) / 100;
+}
+
+float ComputeTreeCost(const std::vector<float>& weights,
+                      const std::vector<unsigned>& spanning_tree) {
+  const unsigned n_edges = spanning_tree.size();
+  float cost = 0;
+  for (unsigned i = 0; i < n_edges; ++i) {
+    cost += weights[spanning_tree[i]];
+  }
+  return cost;
 }
