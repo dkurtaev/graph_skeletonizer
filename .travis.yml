@@ -3,7 +3,7 @@ language: cpp
 notifications:
   email: false
 
-sudo: false
+sudo: required
 
 compiler: gcc
 
@@ -12,6 +12,12 @@ os: linux
 branches:
   only:
     - master
+
+before_install:
+  - sudo apt-get install -y software-properties-common
+  - sudo add-apt-repository ppa:george-edison55/cmake-3.x
+  - sudo apt-get update
+  - sudo apt-get install cmake
 
 script:
   - mkdir build && cd build
