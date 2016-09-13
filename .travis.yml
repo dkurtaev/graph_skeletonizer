@@ -24,4 +24,4 @@ addons:
 script:
   - mkdir build && cd build
   - cmake .. && make -j8
-  - ./bin/spanning_tree_test
+  - find ./bin/ -name *_test -exec {} \;
