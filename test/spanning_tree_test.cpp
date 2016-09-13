@@ -18,10 +18,14 @@ float RandWeight();
 float ComputeTreeCost(const std::vector<float>& weights,
                       const std::vector<unsigned>& spanning_tree);
 
+float CheckEdgesUniqueness(unsigned n_edges,
+                           const std::vector<unsigned>& edges);
+
 TEST(BoruvkaMethod, spanning_tree) {
   static const unsigned kNumGenerations = 10000;
   static const unsigned kMinNumNodes = 3;
   static const unsigned kMaxNumNodes = 25;
+  static const float kZeroLimit = 1e-6f;
 
   std::vector<float> weights;
   std::vector<unsigned> spanning_tree;
@@ -33,13 +37,16 @@ TEST(BoruvkaMethod, spanning_tree) {
 
     BoruvkaMethod::Process(n_nodes, weights, &spanning_tree);
     ASSERT_EQ(spanning_tree.size(), n_nodes - 1);
+    ASSERT_TRUE(CheckEdgesUniqueness(weights.size(), spanning_tree));
     float boruvka_spanning_tree_cost = ComputeTreeCost(weights, spanning_tree);
 
     RandomSpanningTree::Process(n_nodes, weights, &spanning_tree);
     ASSERT_EQ(spanning_tree.size(), n_nodes - 1);
+    ASSERT_TRUE(CheckEdgesUniqueness(weights.size(), spanning_tree));
     float random_spanning_tree_cost = ComputeTreeCost(weights, spanning_tree);
 
-    ASSERT_LE(boruvka_spanning_tree_cost, random_spanning_tree_cost);
+    ASSERT_LT(boruvka_spanning_tree_cost - random_spanning_tree_cost,
+              kZeroLimit);
   }
 }
 
@@ -95,4 +102,18 @@ float ComputeTreeCost(const std::vector<float>& weights,
     cost += weights[spanning_tree[i]];
   }
   return cost;
+}
+
+float CheckEdgesUniqueness(unsigned n_edges,
+                           const std::vector<unsigned>& edges) {
+  std::vector<bool> edge_used(n_edges, false);
+  n_edges = edges.size();
+  for (unsigned i = 0; i < n_edges; ++i) {
+    if (!edge_used[edges[i]]) {
+      edge_used[edges[i]] = true;
+    } else {
+      return false;
+    }
+  }
+  return true;
 }

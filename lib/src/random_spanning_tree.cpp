@@ -18,20 +18,21 @@ void RandomSpanningTree::Process(unsigned n_nodes,
     unsigned node_id = nodes.front();
     nodes.pop();
 
-    unsigned edge_id = node_id;
+    unsigned edge_id = 0;
     for (unsigned i = 0; i < node_id; ++i) {
+      edge_id += node_id - i - 1;
       if (weights[edge_id] != 0 && !nodes_visiting[i]) {
         spanning_tree_edges->push_back(edge_id);
         nodes.push(i);
         nodes_visiting[i] = true;
       }
-      edge_id += n_nodes - 1 - i;
+      edge_id += n_nodes - node_id;
     }
-    for (unsigned i = 0; i < n_nodes - node_id - 1; ++i) {
-      if (weights[edge_id] != 0 && !nodes_visiting[node_id + i + 1]) {
+    for (unsigned i = node_id + 1; i < n_nodes; ++i) {
+      if (weights[edge_id] != 0 && !nodes_visiting[i]) {
         spanning_tree_edges->push_back(edge_id);
-        nodes.push(node_id + i + 1);
-        nodes_visiting[node_id + i + 1] = true;
+        nodes.push(i);
+        nodes_visiting[i] = true;
       }
       ++edge_id;
     }
