@@ -32,6 +32,7 @@ void KruskalMethod::Process(unsigned n_nodes, const std::vector<float>& weights,
 
   // Indicate number of group for each node.
   std::vector<unsigned> node_group_ids(n_nodes);
+  // Indices of nodes
   std::vector<unsigned>* groups = new std::vector<unsigned>[n_nodes];
   for (unsigned i = 0; i < n_nodes; ++i) {
     node_group_ids[i] = i;
@@ -39,29 +40,31 @@ void KruskalMethod::Process(unsigned n_nodes, const std::vector<float>& weights,
   }
 
   const unsigned n_edges = edges.size();
-  Edge* edge = 0;
   for (unsigned i = 0; i < n_edges; ++i) {
-    edge = edges[i];
+    Edge* edge = edges[i];
     unsigned first_group_id = node_group_ids[edge->from];
     unsigned second_group_id = node_group_ids[edge->to];
     if (first_group_id != second_group_id) {
       spanning_tree_edges->push_back(edge->id);
+
       // Merge groups.
       // Let source group with greater number of nodes.
-      unsigned first_group_size = groups[first_group_id].size();
-      unsigned second_group_size = groups[second_group_id].size();
+      std::vector<unsigned>* first_group = &groups[first_group_id];
+      std::vector<unsigned>* second_group = &groups[second_group_id];
+      unsigned first_group_size = first_group->size();
+      unsigned second_group_size = second_group->size();
       if (first_group_size <= second_group_size) {
         for (unsigned i = 0; i < first_group_size; ++i) {
-          node_group_ids[groups[first_group_id][i]] = second_group_id;
-          groups[second_group_id].push_back(groups[first_group_id][i]);
+          node_group_ids[first_group->operator[](i)] = second_group_id;
         }
-        groups[first_group_id].clear();
+        second_group->insert(second_group->end(), first_group->begin(),
+                             first_group->end());
       } else {
         for (unsigned i = 0; i < second_group_size; ++i) {
-          node_group_ids[groups[second_group_id][i]] = first_group_id;
-          groups[first_group_id].push_back(groups[second_group_id][i]);
+          node_group_ids[second_group->operator[](i)] = first_group_id;
         }
-        groups[second_group_id].clear();
+        first_group->insert(first_group->end(), second_group->begin(),
+                            second_group->end());
       }
     }
   }
