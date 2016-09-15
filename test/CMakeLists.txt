@@ -4,6 +4,7 @@ set(tests
   boruvka_method_test.cpp
   kruskal_method_test.cpp
   random_spanning_tree_test.cpp
+  optimal_methods_test.cpp
 )
 
 foreach(test ${tests})
