@@ -1,7 +1,6 @@
 #include "include/kruskal_method.hpp"
 
 #include <vector>
-#include <iostream>
 #include <algorithm>
 
 KruskalMethod::Edge::Edge(unsigned id, float weight, unsigned from,
