@@ -1,5 +1,5 @@
 #include "include/prim_method.hpp"
-
+#include <iostream>
 #include <vector>
 #include <algorithm>
 
@@ -8,7 +8,7 @@ PrimMethod::Edge::Edge(unsigned id, float weight, unsigned from,
   : id(id), weight(weight), from(from), to(to) {}
 
 bool PrimMethod::EdgesComparator(const Edge* first, const Edge* second) {
-  return first->weight < second->weight;
+  return first->weight > second->weight;
 }
 
 void PrimMethod::Process(unsigned n_nodes, const std::vector<float>& weights,
@@ -33,17 +33,14 @@ void PrimMethod::Process(unsigned n_nodes, const std::vector<float>& weights,
   std::vector<bool> node_in_spanning_tree(n_nodes, false);
   node_in_spanning_tree[rand() % n_nodes] = true;
 
-  int n_edges = edges.size();
   do {
-    for (int i = 0; i < n_edges; ++i) {
+    for (unsigned i = edges.size() - 1; i >= 0; --i) {
       Edge* edge = edges[i];
       bool first_node_inside_tree = node_in_spanning_tree[edge->from];
       bool second_node_inside_tree = node_in_spanning_tree[edge->to];
 
       if (first_node_inside_tree || second_node_inside_tree) {
         edges.erase(edges.begin() + i);
-        --i;
-        --n_edges;
         if (!first_node_inside_tree || !second_node_inside_tree) {
           spanning_tree_edges->push_back(edge->id);
           node_in_spanning_tree[edge->from] = true;
