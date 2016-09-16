@@ -5,6 +5,7 @@
 #include "gtest/gtest.h"
 
 #include "test/macros.hpp"
+#include "include/graph_generator.hpp"
 #include "include/graph.hpp"
 
 TEST(Graph, reading_from_file) {
@@ -13,13 +14,10 @@ TEST(Graph, reading_from_file) {
   static const unsigned kMaxNumNodes = 25;
 
   for (unsigned iter = 0; iter < kNumGenerations; ++iter) {
-    int n_nodes = rand() % (kMaxNumNodes - kMinNumNodes + 1) + kMinNumNodes;
-    const unsigned kMinNumEdges = n_nodes - 1;  // For connectivity.
-    const unsigned kMaxNumEdges = n_nodes * (n_nodes - 1) / 2;
-    int n_edges = rand() % (kMaxNumEdges - kMinNumEdges + 1) + kMinNumEdges;
-
     std::vector<GraphEdge> target_edges;
-    GenGraph(n_nodes, n_edges, &target_edges);
+    int n_nodes = GraphGenerator::GenGraph(kMinNumNodes, kMaxNumNodes,
+                                           &target_edges);
+    int n_edges = target_edges.size();
 
     // Writing file.
     static const std::string file_path = "./graph_test.txt";

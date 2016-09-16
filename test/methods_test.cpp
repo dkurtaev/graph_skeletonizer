@@ -3,6 +3,7 @@
 #include "gtest/gtest.h"
 
 #include "test/macros.hpp"
+#include "include/graph_generator.hpp"
 #include "include/graph.hpp"
 #include "include/boruvka_method.hpp"
 #include "include/kruskal_method.hpp"
@@ -53,14 +54,7 @@ void TestCorrectness(void (*Method)(unsigned, const std::vector<GraphEdge>&,
   std::vector<GraphEdge> edges;
   std::vector<GraphEdge> spanning_tree;
   for (unsigned iter = 0; iter < kNumGenerations; ++iter) {
-    int n_nodes = rand() % (kMaxNumNodes - kMinNumNodes + 1) + kMinNumNodes;
-    const unsigned kMinNumEdges = n_nodes - 1;  // For connectivity.
-    const unsigned kMaxNumEdges = n_nodes * (n_nodes - 1) / 2;
-    int n_edges = rand() % (kMaxNumEdges - kMinNumEdges + 1) + kMinNumEdges;
-    GenGraph(n_nodes, n_edges, &edges);
-
-    Graph gr(n_nodes, edges);
-    gr.WriteDot("./test.dot");
+    int n_nodes = GraphGenerator::GenGraph(kMinNumNodes, kMaxNumNodes, &edges);
 
     Method(n_nodes, edges, &spanning_tree);
     ASSERT_EQ(spanning_tree.size(), n_nodes - 1);
@@ -79,11 +73,7 @@ void TestIsBetterThanRandom(void (*Method)(unsigned,
   std::vector<GraphEdge> edges;
   std::vector<GraphEdge> spanning_tree;
   for (unsigned iter = 0; iter < kNumGenerations; ++iter) {
-    int n_nodes = rand() % (kMaxNumNodes - kMinNumNodes + 1) + kMinNumNodes;
-    const unsigned kMinNumEdges = n_nodes - 1;  // For connectivity.
-    const unsigned kMaxNumEdges = n_nodes * (n_nodes - 1) / 2;
-    int n_edges = rand() % (kMaxNumEdges - kMinNumEdges + 1) + kMinNumEdges;
-    GenGraph(n_nodes, n_edges, &edges);
+    int n_nodes = GraphGenerator::GenGraph(kMinNumNodes, kMaxNumNodes, &edges);
 
     Method(n_nodes, edges, &spanning_tree);
     float method_spanning_tree_cost = WeightsSum(spanning_tree);

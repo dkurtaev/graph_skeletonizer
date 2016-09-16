@@ -5,6 +5,7 @@
 #include "gtest/gtest.h"
 
 #include "test/macros.hpp"
+#include "include/graph_generator.hpp"
 #include "include/boruvka_method.hpp"
 #include "include/kruskal_method.hpp"
 #include "include/prim_method.hpp"
@@ -19,11 +20,7 @@ TEST(OptimalMethods, equals_costs) {
   std::vector<GraphEdge> edges;
   std::vector<GraphEdge> spanning_tree;
   for (unsigned iter = 0; iter < kNumGenerations; ++iter) {
-    int n_nodes = rand() % (kMaxNumNodes - kMinNumNodes + 1) + kMinNumNodes;
-    const unsigned kMinNumEdges = n_nodes - 1;  // For connectivity.
-    const unsigned kMaxNumEdges = n_nodes * (n_nodes - 1) / 2;
-    int n_edges = rand() % (kMaxNumEdges - kMinNumEdges + 1) + kMinNumEdges;
-    GenGraph(n_nodes, n_edges, &edges);
+    int n_nodes = GraphGenerator::GenGraph(kMinNumNodes, kMaxNumNodes, &edges);
 
     BoruvkaMethod::Process(n_nodes, edges, &spanning_tree);
     float boruvka_spanning_tree_cost = WeightsSum(spanning_tree);
