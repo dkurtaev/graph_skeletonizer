@@ -1,6 +1,8 @@
 #ifndef INCLUDE_KRUSKAL_METHOD_HPP_
 #define INCLUDE_KRUSKAL_METHOD_HPP_
 
+#include <vector>
+
 #include "include/graph.hpp"
 
 class KruskalMethod {

@@ -12,6 +12,7 @@ void KruskalMethod::Process(unsigned n_nodes,
                             const std::vector<GraphEdge>& graph_edges,
                             std::vector<GraphEdge>* spanning_tree_edges) {
   spanning_tree_edges->clear();
+  spanning_tree_edges->reserve(n_nodes - 1);
 
   std::vector<GraphEdge> edges(graph_edges);
   std::sort(edges.begin(), edges.end(), EdgesComparator);

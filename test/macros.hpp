@@ -14,8 +14,7 @@ void GenPath(unsigned n_nodes, std::vector<GraphEdge>* edges);
 
 float RandWeight();
 
-float ComputeTreeCost(const std::vector<float>& weights,
-                      const std::vector<unsigned>& spanning_tree);
+float WeightsSum(const std::vector<GraphEdge>& edges);
 
 // Check that edges has different ids.
 bool CheckEdgesUniqueness(const std::vector<GraphEdge>& edges);
@@ -86,12 +85,11 @@ float RandWeight() {
   return static_cast<float>(rand() % 100 + 1) / 100;
 }
 
-float ComputeTreeCost(const std::vector<float>& weights,
-                      const std::vector<unsigned>& spanning_tree) {
-  const unsigned n_edges = spanning_tree.size();
+float WeightsSum(const std::vector<GraphEdge>& edges) {
+  const unsigned n_edges = edges.size();
   float cost = 0;
   for (unsigned i = 0; i < n_edges; ++i) {
-    cost += weights[spanning_tree[i]];
+    cost += edges[i].weight;
   }
   return cost;
 }
