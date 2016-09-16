@@ -1,7 +1,6 @@
 #ifndef TEST_MACROS_HPP_
 #define TEST_MACROS_HPP_
 
-#include <utility>
 #include <set>
 
 #include "include/graph.hpp"

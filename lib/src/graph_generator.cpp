@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 
+#include <set>
+
 void GraphGenerator::GenGraph(unsigned n_nodes, std::vector<GraphEdge>* edges) {
   const unsigned min_n_edges = n_nodes - 1;  // For connectivity.
   const unsigned max_n_edges = n_nodes * (n_nodes - 1) / 2;
@@ -21,22 +23,15 @@ void GraphGenerator::GenGraph(unsigned n_nodes, unsigned n_edges,
                               std::vector<GraphEdge>* edges) {
   GenPath(n_nodes, min_weight, max_weight, edges);
 
-  std::vector<std::pair<int, int> > unused_edges;
-  for (int from = 0; from < n_nodes - 1; ++from) {
-    for (int to = from + 1; to < n_nodes; ++to) {
-
-      bool is_used = false;
-      for (int i = 0; i < edges->size(); ++i) {
-        GraphEdge edge = edges->operator[](i);
-        if (edge.nodes[0] == from && edge.nodes[1] == to ||
-            edge.nodes[0] == to && edge.nodes[1] == from) {
-          is_used = true;
-          break;
-        }
-      }
-      if (!is_used) {
-        unused_edges.push_back(std::pair<int, int>(from, to));
-      }
+  std::set<unsigned> used_edges;
+  for (unsigned i = 0; i < n_nodes - 1; ++i) {
+    GraphEdge* edge = &edges->operator[](i);
+    unsigned id_1 = edge->nodes[0];
+    unsigned id_2 = edge->nodes[1];
+    if (id_1 < id_2) {
+      used_edges.insert(id_1 * n_nodes + id_2);
+    } else {
+      used_edges.insert(id_2 * n_nodes + id_1);
     }
   }
 
@@ -44,12 +39,24 @@ void GraphGenerator::GenGraph(unsigned n_nodes, unsigned n_edges,
   GraphEdge edge;
   edge.id = edges->size();
   for (int i = 0; i < n_edges; ++i) {
-    unsigned idx = rand() % unused_edges.size();
-    edge.nodes[0] = unused_edges[idx].first;
-    edge.nodes[1] = unused_edges[idx].second;
     edge.weight = RandWeight(min_weight, max_weight);
+
+    unsigned id_1, id_2;
+    bool edge_is_unused = false;
+    do {
+      id_1 = rand() % n_nodes;
+      id_2 = rand() % n_nodes;
+      if (id_1 < id_2) {
+        edge_is_unused = used_edges.insert(id_1 * n_nodes + id_2).second;
+      } else {
+        edge_is_unused = used_edges.insert(id_2 * n_nodes + id_1).second;
+      }
+    } while (id_1 == id_2 || !edge_is_unused);
+
+    edge.nodes[0] = id_1;
+    edge.nodes[1] = id_2;
+
     edges->push_back(edge);
-    unused_edges.erase(unused_edges.begin() + idx);
     ++edge.id;
   }
 }

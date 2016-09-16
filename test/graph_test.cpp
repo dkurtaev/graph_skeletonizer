@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include <fstream>
 #include <string>
 #include <vector>
@@ -12,6 +14,7 @@ TEST(Graph, reading_from_file) {
   static const unsigned kNumGenerations = 50;
   static const unsigned kMinNumNodes = 3;
   static const unsigned kMaxNumNodes = 25;
+  static const float kZeroLimit = 1e-5f;
 
   for (unsigned iter = 0; iter < kNumGenerations; ++iter) {
     std::vector<GraphEdge> target_edges;
@@ -38,7 +41,8 @@ TEST(Graph, reading_from_file) {
     for (int i = 0; i < n_edges; ++i) {
       ASSERT_EQ(target_edges[i].nodes[0], received_edges[i].nodes[0]);
       ASSERT_EQ(target_edges[i].nodes[1], received_edges[i].nodes[1]);
-      ASSERT_EQ(target_edges[i].weight, received_edges[i].weight);
+      ASSERT_LT(fabs(target_edges[i].weight - received_edges[i].weight),
+                kZeroLimit);
     }
   }
 }
