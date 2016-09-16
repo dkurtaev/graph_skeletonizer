@@ -16,7 +16,7 @@ struct GraphEdge {
 // Undirected, weighted graph without loops and without multiple edges.
 class Graph {
  public:
-  // explicit Graph(unsigned n_nodes, const std::vector<float>& weights);
+  Graph(unsigned n_nodes, const std::vector<GraphEdge>& edges);
 
   // Reading text file in format:
   // number of nodes (n);

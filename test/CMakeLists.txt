@@ -2,7 +2,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty")
 
 set(tests
   methods_test.cpp
-  optimal_methods_test.cpp
+  # optimal_methods_test.cpp
   graph_test.cpp
 )
 

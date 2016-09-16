@@ -3,30 +3,17 @@
 #include <vector>
 #include <algorithm>
 
-KruskalMethod::Edge::Edge(unsigned id, float weight, unsigned from,
-                          unsigned to)
-  : id(id), weight(weight), from(from), to(to) {}
-
-bool KruskalMethod::EdgesComparator(const Edge* first, const Edge* second) {
-  return first->weight < second->weight;
+bool KruskalMethod::EdgesComparator(const GraphEdge& first,
+                                    const GraphEdge& second) {
+  return first.weight < second.weight;
 }
 
-void KruskalMethod::Process(unsigned n_nodes, const std::vector<float>& weights,
-                            std::vector<unsigned>* spanning_tree_edges) {
+void KruskalMethod::Process(unsigned n_nodes,
+                            const std::vector<GraphEdge>& graph_edges,
+                            std::vector<GraphEdge>* spanning_tree_edges) {
   spanning_tree_edges->clear();
-  std::vector<Edge*> edges;
 
-  unsigned edge_id = 0;
-  for (unsigned i = 0; i < n_nodes - 1; ++i) {
-    for (unsigned j = i + 1; j < n_nodes; ++j) {
-      float weight = weights[edge_id];
-      if (weight != 0) {
-        edges.push_back(new Edge(edge_id, weight, i, j));
-      }
-      ++edge_id;
-    }
-  }
-
+  std::vector<GraphEdge> edges(graph_edges);
   std::sort(edges.begin(), edges.end(), EdgesComparator);
 
   // Indicate number of group for each node.
@@ -40,11 +27,11 @@ void KruskalMethod::Process(unsigned n_nodes, const std::vector<float>& weights,
 
   const unsigned n_edges = edges.size();
   for (unsigned i = 0; i < n_edges; ++i) {
-    Edge* edge = edges[i];
-    unsigned first_group_id = node_group_ids[edge->from];
-    unsigned second_group_id = node_group_ids[edge->to];
+    GraphEdge edge = edges[i];
+    unsigned first_group_id = node_group_ids[edge.nodes[0]];
+    unsigned second_group_id = node_group_ids[edge.nodes[1]];
     if (first_group_id != second_group_id) {
-      spanning_tree_edges->push_back(edge->id);
+      spanning_tree_edges->push_back(edge);
 
       // Merge groups.
       // Let source group with greater number of nodes.

@@ -18,8 +18,8 @@ GraphEdge::GraphEdge(unsigned id, unsigned first_node_id,
   nodes[1] = second_node_id;
 }
 
-// Graph::Graph(unsigned n_nodes, const std::vector<float>& weights)
-//   : n_nodes_(n_nodes), weights_(weights) {}
+Graph::Graph(unsigned n_nodes, const std::vector<GraphEdge>& edges)
+  : n_nodes_(n_nodes), edges_(edges) {}
 
 Graph::Graph(const std::string& file_path) {
   std::ifstream file(file_path.c_str());
