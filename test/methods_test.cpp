@@ -16,9 +16,9 @@ void TestIsBetterThanRandom(void (*Method)(unsigned,
                                            const std::vector<GraphEdge>&,
                                            std::vector<GraphEdge>*));
 
-// TEST(BoruvkaMethod, spanning_tree_correctness) {
-//   TestCorrectness(BoruvkaMethod::Process);
-// }
+TEST(BoruvkaMethod, spanning_tree_correctness) {
+  TestCorrectness(BoruvkaMethod::Process);
+}
 
 TEST(KruskalMethod, spanning_tree_correctness) {
   TestCorrectness(KruskalMethod::Process);
@@ -31,10 +31,10 @@ TEST(PrimMethod, spanning_tree_correctness) {
 TEST(RandomSpanningTree, spanning_tree_correctness) {
   TestCorrectness(RandomSpanningTree::Process);
 }
-//
-// TEST(BoruvkaMethod, is_better_than_random) {
-//   TestIsBetterThanRandom(BoruvkaMethod::Process);
-// }
+
+TEST(BoruvkaMethod, is_better_than_random) {
+  TestIsBetterThanRandom(BoruvkaMethod::Process);
+}
 
 TEST(KruskalMethod, is_better_than_random) {
   TestIsBetterThanRandom(KruskalMethod::Process);
@@ -48,7 +48,7 @@ void TestCorrectness(void (*Method)(unsigned, const std::vector<GraphEdge>&,
                                     std::vector<GraphEdge>*)) {
   static const unsigned kNumGenerations = 10000;
   static const unsigned kMinNumNodes = 3;
-  static const unsigned kMaxNumNodes = 25;
+  static const unsigned kMaxNumNodes = 4;
 
   std::vector<GraphEdge> edges;
   std::vector<GraphEdge> spanning_tree;
@@ -58,6 +58,10 @@ void TestCorrectness(void (*Method)(unsigned, const std::vector<GraphEdge>&,
     const unsigned kMaxNumEdges = n_nodes * (n_nodes - 1) / 2;
     int n_edges = rand() % (kMaxNumEdges - kMinNumEdges + 1) + kMinNumEdges;
     GenGraph(n_nodes, n_edges, &edges);
+
+    Graph gr(n_nodes, edges);
+    gr.WriteDot("./test.dot");
+
     Method(n_nodes, edges, &spanning_tree);
     ASSERT_EQ(spanning_tree.size(), n_nodes - 1);
     ASSERT_TRUE(CheckEdgesUniqueness(spanning_tree));
