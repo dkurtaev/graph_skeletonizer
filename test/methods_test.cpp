@@ -24,9 +24,9 @@ TEST(KruskalMethod, spanning_tree_correctness) {
   TestCorrectness(KruskalMethod::Process);
 }
 
-// TEST(PrimMethod, spanning_tree_correctness) {
-//   TestCorrectness(PrimMethod::Process);
-// }
+TEST(PrimMethod, spanning_tree_correctness) {
+  TestCorrectness(PrimMethod::Process);
+}
 
 TEST(RandomSpanningTree, spanning_tree_correctness) {
   TestCorrectness(RandomSpanningTree::Process);
@@ -40,9 +40,9 @@ TEST(KruskalMethod, is_better_than_random) {
   TestIsBetterThanRandom(KruskalMethod::Process);
 }
 
-// TEST(PrimMethod, is_better_than_random) {
-//   TestIsBetterThanRandom(PrimMethod::Process);
-// }
+TEST(PrimMethod, is_better_than_random) {
+  TestIsBetterThanRandom(PrimMethod::Process);
+}
 
 void TestCorrectness(void (*Method)(unsigned, const std::vector<GraphEdge>&,
                                     std::vector<GraphEdge>*)) {
