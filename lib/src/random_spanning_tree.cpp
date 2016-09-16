@@ -3,10 +3,11 @@
 #include <stdlib.h>
 
 #include <queue>
+#include <vector>
 
 void RandomSpanningTree::Process(unsigned n_nodes,
-                                 const std::vector<float>& weights,
-                                 std::vector<unsigned>* spanning_tree_edges) {
+                                 const std::vector<GraphEdge>& edges,
+                                 std::vector<GraphEdge>* spanning_tree_edges) {
   spanning_tree_edges->clear();
   spanning_tree_edges->reserve(n_nodes - 1);
 
@@ -18,23 +19,17 @@ void RandomSpanningTree::Process(unsigned n_nodes,
     unsigned node_id = nodes.front();
     nodes.pop();
 
-    unsigned edge_id = 0;
-    for (unsigned i = 0; i < node_id; ++i) {
-      edge_id += node_id - i - 1;
-      if (weights[edge_id] != 0 && !nodes_visiting[i]) {
-        spanning_tree_edges->push_back(edge_id);
-        nodes.push(i);
-        nodes_visiting[i] = true;
+    for (unsigned i = 0; i < edges.size(); ++i) {
+      GraphEdge edge = edges[i];
+      if (edge.nodes[0] == node_id && !nodes_visiting[edge.nodes[1]]) {
+        spanning_tree_edges->push_back(edge);
+        nodes.push(edge.nodes[1]);
+        nodes_visiting[edge.nodes[1]] = true;
+      } else if (edge.nodes[1] == node_id && !nodes_visiting[edge.nodes[0]]) {
+        spanning_tree_edges->push_back(edge);
+        nodes.push(edge.nodes[0]);
+        nodes_visiting[edge.nodes[0]] = true;
       }
-      edge_id += n_nodes - node_id;
-    }
-    for (unsigned i = node_id + 1; i < n_nodes; ++i) {
-      if (weights[edge_id] != 0 && !nodes_visiting[i]) {
-        spanning_tree_edges->push_back(edge_id);
-        nodes.push(i);
-        nodes_visiting[i] = true;
-      }
-      ++edge_id;
     }
   } while (!nodes.empty());
 }

@@ -3,24 +3,15 @@
 
 #include <vector>
 
+#include "include/graph.hpp"
+
 class KruskalMethod {
  public:
-  // #weights = n_nodes*(n_nodes-1) / 2.
-  // Returns edges ids of spanning tree.
-  static void Process(unsigned n_nodes, const std::vector<float>& weights,
-                      std::vector<unsigned>* spanning_tree_edges);
+  static void Process(unsigned n_nodes, const std::vector<GraphEdge>& edges,
+                      std::vector<GraphEdge>* spanning_tree_edges);
 
  private:
-   struct Edge {
-     Edge(unsigned id, float weight, unsigned from, unsigned to);
-
-     unsigned id;
-     float weight;
-     unsigned from;
-     unsigned to;
-   };
-
-   static bool EdgesComparator(const Edge* first, const Edge* second);
+  static bool EdgesComparator(const GraphEdge& first, const GraphEdge& second);
 };
 
 #endif  // INCLUDE_KRUSKAL_METHOD_HPP_

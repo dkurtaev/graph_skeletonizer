@@ -4,29 +4,36 @@
 #include <string>
 #include <vector>
 
+struct GraphEdge {
+  GraphEdge(unsigned id = 0, unsigned first_node_id = 0,
+            unsigned second_node_id = 0, float weight = 0);
+
+  unsigned id;
+  unsigned nodes[2];  // Ids of incident graph nodes.
+  float weight;
+};
+
 // Undirected, weighted graph without loops and without multiple edges.
-// If edge weight is zero - edge is not exists.
 class Graph {
  public:
-  explicit Graph(unsigned n_nodes, const std::vector<float>& weights);
+  Graph(unsigned n_nodes, const std::vector<GraphEdge>& edges);
 
   // Reading text file in format:
-  // number of nodes (n), n(n-1)/2 weights.
+  // number of nodes (n);
+  // number of edges (m);
+  // node id, node id, weight (for each edge).
   explicit Graph(const std::string& file_path);
 
   // Writing .dot file for graph visualization.
   void WriteDot(const std::string& file_path) const;
 
-  void GetWeights(std::vector<float>* weights) const;
+  void GetEdges(std::vector<GraphEdge>* edges) const;
 
   unsigned GetNumberNodes() const;
 
  private:
   unsigned n_nodes_;
-  // Contained weighs wij (between i and j nodes):
-  // w12, w13, ..., w1n, w23, w24, ..., w2n, ..., w(n-1)n.
-  // Totally n(n-1)/2.
-  std::vector<float> weights_;
+  std::vector<GraphEdge> edges_;
 };
 
 #endif  // INCLUDE_GRAPH_HPP_

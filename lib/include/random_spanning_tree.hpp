@@ -3,10 +3,12 @@
 
 #include <vector>
 
+#include "include/graph.hpp"
+
 class RandomSpanningTree {
  public:
-  static void Process(unsigned n_nodes, const std::vector<float>& weights,
-                      std::vector<unsigned>* spanning_tree_edges);
+  static void Process(unsigned n_nodes, const std::vector<GraphEdge>& edges,
+                      std::vector<GraphEdge>* spanning_tree_edges);
 };
 
 #endif  // INCLUDE_BORUVKA_METHOD_HPP_

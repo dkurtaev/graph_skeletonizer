@@ -14,22 +14,25 @@ TEST(OptimalMethods, equals_costs) {
   static const unsigned kNumGenerations = 10000;
   static const unsigned kMinNumNodes = 3;
   static const unsigned kMaxNumNodes = 25;
-  static const float kZeroLimit = 1e-6f;
+  static const float kZeroLimit = 1e-5f;
 
-  std::vector<float> weights;
-  std::vector<unsigned> spanning_tree;
+  std::vector<GraphEdge> edges;
+  std::vector<GraphEdge> spanning_tree;
   for (unsigned iter = 0; iter < kNumGenerations; ++iter) {
     int n_nodes = rand() % (kMaxNumNodes - kMinNumNodes + 1) + kMinNumNodes;
-    GenGraph(n_nodes, &weights);
+    const unsigned kMinNumEdges = n_nodes - 1;  // For connectivity.
+    const unsigned kMaxNumEdges = n_nodes * (n_nodes - 1) / 2;
+    int n_edges = rand() % (kMaxNumEdges - kMinNumEdges + 1) + kMinNumEdges;
+    GenGraph(n_nodes, n_edges, &edges);
 
-    BoruvkaMethod::Process(n_nodes, weights, &spanning_tree);
-    float boruvka_spanning_tree_cost = ComputeTreeCost(weights, spanning_tree);
+    BoruvkaMethod::Process(n_nodes, edges, &spanning_tree);
+    float boruvka_spanning_tree_cost = WeightsSum(spanning_tree);
 
-    KruskalMethod::Process(n_nodes, weights, &spanning_tree);
-    float kruskal_spanning_tree_cost = ComputeTreeCost(weights, spanning_tree);
+    KruskalMethod::Process(n_nodes, edges, &spanning_tree);
+    float kruskal_spanning_tree_cost = WeightsSum(spanning_tree);
 
-    PrimMethod::Process(n_nodes, weights, &spanning_tree);
-    float prim_spanning_tree_cost = ComputeTreeCost(weights, spanning_tree);
+    PrimMethod::Process(n_nodes, edges, &spanning_tree);
+    float prim_spanning_tree_cost = WeightsSum(spanning_tree);
 
     ASSERT_LT(fabs(kruskal_spanning_tree_cost - boruvka_spanning_tree_cost),
               kZeroLimit);
