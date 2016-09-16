@@ -17,6 +17,8 @@ class GraphGenerator {
    static unsigned GenGraph(unsigned min_n_nodes, unsigned max_n_nodes,
                             std::vector<GraphEdge>* edges);
 
+   static bool GraphParametersIsCorrect(unsigned n_nodes, unsigned n_edges);
+
  private:
   // Add edges for graph connectivity.
   static void GenPath(unsigned n_nodes, float min_weight, float max_weight,

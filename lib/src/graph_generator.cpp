@@ -90,3 +90,8 @@ float GraphGenerator::RandWeight(float min_weight, float max_weight,
   const float step = (max_weight - min_weight) / (n_bins - 1);
   return min_weight + step * (rand() % n_bins);
 }
+
+bool GraphGenerator::GraphParametersIsCorrect(unsigned n_nodes,
+                                              unsigned n_edges) {
+  return n_nodes - 1 <= n_edges && n_edges <= n_nodes * (n_nodes - 1) / 2;
+}
