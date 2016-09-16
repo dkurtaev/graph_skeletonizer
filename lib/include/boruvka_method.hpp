@@ -13,7 +13,7 @@ class BoruvkaMethod {
  private:
   class Skeleton {
    public:
-    Skeleton(unsigned id) : id_(id), minimal_weighted_edge_(0) {}
+    explicit Skeleton(unsigned id) : id_(id), minimal_weighted_edge_(0) {}
 
     void AddEdge(GraphEdge* edge);
 

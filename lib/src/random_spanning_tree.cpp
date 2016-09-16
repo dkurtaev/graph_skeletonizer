@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include <queue>
+#include <vector>
 
 void RandomSpanningTree::Process(unsigned n_nodes,
                                  const std::vector<GraphEdge>& edges,

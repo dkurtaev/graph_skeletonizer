@@ -48,7 +48,7 @@ void TestCorrectness(void (*Method)(unsigned, const std::vector<GraphEdge>&,
                                     std::vector<GraphEdge>*)) {
   static const unsigned kNumGenerations = 10000;
   static const unsigned kMinNumNodes = 3;
-  static const unsigned kMaxNumNodes = 4;
+  static const unsigned kMaxNumNodes = 25;
 
   std::vector<GraphEdge> edges;
   std::vector<GraphEdge> spanning_tree;

@@ -11,7 +11,7 @@ class PrimMethod {
                       std::vector<GraphEdge>* spanning_tree_edges);
 
  private:
-   static bool EdgesComparator(const GraphEdge& first, const GraphEdge& second);
+  static bool EdgesComparator(const GraphEdge& first, const GraphEdge& second);
 };
 
 #endif  // INCLUDE_PRIM_METHOD_HPP_
