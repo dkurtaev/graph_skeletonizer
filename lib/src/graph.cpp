@@ -11,14 +11,13 @@
 
 #include "glog/logging.h"
 
-GraphEdge::GraphEdge(unsigned id, unsigned first_node_id,
-                     unsigned second_node_id, float weight)
-  : id(id), weight(weight) {
+Edge::Edge(unsigned first_node_id, unsigned second_node_id, float weight)
+  : weight(weight) {
   nodes[0] = first_node_id;
   nodes[1] = second_node_id;
 }
 
-Graph::Graph(unsigned n_nodes, const std::vector<GraphEdge>& edges)
+Graph::Graph(unsigned n_nodes, const std::vector<Edge>& edges)
   : n_nodes_(n_nodes), edges_(edges) {}
 
 Graph::Graph(const std::string& file_path) {
@@ -30,7 +29,6 @@ Graph::Graph(const std::string& file_path) {
   file >> n_edges;
   edges_.resize(n_edges);
   for (unsigned i = 0; i < n_edges; ++i) {
-    edges_[i].id = i;
     file >> edges_[i].nodes[0];
     file >> edges_[i].nodes[1];
     file >> edges_[i].weight;
@@ -53,7 +51,7 @@ void Graph::WriteDot(const std::string& file_path) const {
   file.close();
 }
 
-void Graph::GetEdges(std::vector<GraphEdge>* edges) const {
+void Graph::GetEdges(std::vector<Edge>* edges) const {
   edges->resize(edges_.size());
   std::copy(edges_.begin(), edges_.end(), edges->begin());
 }

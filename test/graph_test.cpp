@@ -18,7 +18,7 @@ TEST(Graph, reading_from_file) {
     const unsigned kMaxNumEdges = n_nodes * (n_nodes - 1) / 2;
     int n_edges = rand() % (kMaxNumEdges - kMinNumEdges + 1) + kMinNumEdges;
 
-    std::vector<GraphEdge> target_edges;
+    std::vector<Edge> target_edges;
     GenGraph(n_nodes, n_edges, &target_edges);
 
     // Writing file.
@@ -33,7 +33,7 @@ TEST(Graph, reading_from_file) {
 
     // Graph creating.
     Graph graph(file_path);
-    std::vector<GraphEdge> received_edges;
+    std::vector<Edge> received_edges;
     graph.GetEdges(&received_edges);
 
     ASSERT_EQ(n_edges, received_edges.size());

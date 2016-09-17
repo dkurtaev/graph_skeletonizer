@@ -7,11 +7,11 @@
 
 class PrimMethod {
  public:
-  static void Process(unsigned n_nodes, const std::vector<GraphEdge>& edges,
-                      std::vector<GraphEdge>* spanning_tree_edges);
+  static void Process(unsigned n_nodes, const std::vector<Edge>& edges,
+                      std::vector<Edge>* spanning_tree_edges);
 
  private:
-  static bool EdgesComparator(const GraphEdge& first, const GraphEdge& second);
+  static bool EdgesComparator(const Edge& first, const Edge& second);
 };
 
 #endif  // INCLUDE_PRIM_METHOD_HPP_

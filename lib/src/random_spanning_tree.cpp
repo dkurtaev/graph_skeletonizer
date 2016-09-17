@@ -6,8 +6,8 @@
 #include <vector>
 
 void RandomSpanningTree::Process(unsigned n_nodes,
-                                 const std::vector<GraphEdge>& edges,
-                                 std::vector<GraphEdge>* spanning_tree_edges) {
+                                 const std::vector<Edge>& edges,
+                                 std::vector<Edge>* spanning_tree_edges) {
   spanning_tree_edges->clear();
   spanning_tree_edges->reserve(n_nodes - 1);
 
@@ -20,7 +20,7 @@ void RandomSpanningTree::Process(unsigned n_nodes,
     nodes.pop();
 
     for (unsigned i = 0; i < edges.size(); ++i) {
-      GraphEdge edge = edges[i];
+      Edge edge = edges[i];
       if (edge.nodes[0] == node_id && !nodes_visiting[edge.nodes[1]]) {
         spanning_tree_edges->push_back(edge);
         nodes.push(edge.nodes[1]);
