@@ -32,4 +32,4 @@ for scale in [100, 1000]:
     plt.title('w in [1, 1e+6], #edges=%dn' % scale)
     plt.legend()
     plt.grid(True)
-    plt.savefig(outfile % (scale, 'plot'))
+    plt.savefig('./times_%dn_edges.svg' % scale)

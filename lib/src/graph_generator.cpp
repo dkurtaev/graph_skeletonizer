@@ -2,7 +2,9 @@
 
 #include <stdlib.h>
 
+#include <utility>
 #include <set>
+#include <vector>
 
 void GraphGenerator::GenGraph(unsigned n_nodes, std::vector<Edge>* edges) {
   const unsigned min_n_edges = n_nodes - 1;  // For connectivity.
@@ -23,37 +25,33 @@ void GraphGenerator::GenGraph(unsigned n_nodes, unsigned n_edges,
                               std::vector<Edge>* edges) {
   GenPath(n_nodes, min_weight, max_weight, edges);
 
-  std::set<unsigned> used_edges;
+  std::set<unsigned> used_edges_hashes;
   for (unsigned i = 0; i < n_nodes - 1; ++i) {
     Edge* edge = &edges->operator[](i);
-    unsigned id_1 = edge->nodes[0];
-    unsigned id_2 = edge->nodes[1];
-    if (id_1 < id_2) {
-      used_edges.insert(id_1 * n_nodes + id_2);
-    } else {
-      used_edges.insert(id_2 * n_nodes + id_1);
-    }
+    used_edges_hashes.insert(GetEdgeHash(edge->nodes[0], edge->nodes[1],
+                                         n_nodes));
   }
 
-  n_edges = n_edges - edges->size();
+  n_edges -= edges->size();
   Edge edge;
   for (int i = 0; i < n_edges; ++i) {
     edge.weight = RandWeight(min_weight, max_weight);
 
-    unsigned id_1, id_2;
-    bool edge_is_unused = false;
+    unsigned hash, id_1, id_2;
     do {
-      id_1 = rand() % n_nodes;
-      id_2 = rand() % n_nodes;
-      if (id_1 < id_2) {
-        edge_is_unused = used_edges.insert(id_1 * n_nodes + id_2).second;
-      } else {
-        edge_is_unused = used_edges.insert(id_2 * n_nodes + id_1).second;
-      }
-    } while (id_1 == id_2 || !edge_is_unused);
+      hash = rand() % (n_nodes * n_nodes);
+      id_1 = hash / n_nodes;
+      id_2 = hash - id_1 * n_nodes;
+      hash = GetEdgeHash(id_1, id_2, n_nodes);
+    } while (id_1 == id_2 || !used_edges_hashes.insert(hash).second);
 
-    edge.nodes[0] = id_1;
-    edge.nodes[1] = id_2;
+    if (rand() & 1) {
+      edge.nodes[0] = id_1;
+      edge.nodes[1] = id_2;
+    } else {
+      edge.nodes[0] = id_2;
+      edge.nodes[1] = id_1;
+    }
 
     edges->push_back(edge);
   }
@@ -90,4 +88,12 @@ float GraphGenerator::RandWeight(float min_weight, float max_weight,
 bool GraphGenerator::GraphParametersIsCorrect(unsigned n_nodes,
                                               unsigned n_edges) {
   return n_nodes - 1 <= n_edges && n_edges <= n_nodes * (n_nodes - 1) / 2;
+}
+
+unsigned GraphGenerator::GetEdgeHash(unsigned from, unsigned to,
+                                     unsigned n_nodes) {
+  if (from > to) {
+    std::swap(from, to);
+  }
+  return from * (2 * n_nodes - from - 2) + to - 1;
 }
