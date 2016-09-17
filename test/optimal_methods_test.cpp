@@ -16,8 +16,8 @@ TEST(OptimalMethods, equals_costs) {
   static const unsigned kMaxNumNodes = 25;
   static const float kZeroLimit = 1e-5f;
 
-  std::vector<GraphEdge> edges;
-  std::vector<GraphEdge> spanning_tree;
+  std::vector<Edge> edges;
+  std::vector<Edge> spanning_tree;
   for (unsigned iter = 0; iter < kNumGenerations; ++iter) {
     int n_nodes = rand() % (kMaxNumNodes - kMinNumNodes + 1) + kMinNumNodes;
     const unsigned kMinNumEdges = n_nodes - 1;  // For connectivity.

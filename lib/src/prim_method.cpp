@@ -4,18 +4,18 @@
 #include <algorithm>
 
 
-bool PrimMethod::EdgesComparator(const GraphEdge& first,
-                                 const GraphEdge& second) {
+bool PrimMethod::EdgesComparator(const Edge& first,
+                                 const Edge& second) {
   return first.weight > second.weight;
 }
 
 void PrimMethod::Process(unsigned n_nodes,
-                         const std::vector<GraphEdge>& graph_edges,
-                         std::vector<GraphEdge>* spanning_tree_edges) {
+                         const std::vector<Edge>& graph_edges,
+                         std::vector<Edge>* spanning_tree_edges) {
   spanning_tree_edges->clear();
   spanning_tree_edges->reserve(n_nodes - 1);
 
-  std::vector<GraphEdge> edges(graph_edges);
+  std::vector<Edge> edges(graph_edges);
   std::sort(edges.begin(), edges.end(), EdgesComparator);
 
   // Indicates which nodes are inside spanning tree at the moment.
@@ -23,7 +23,7 @@ void PrimMethod::Process(unsigned n_nodes,
   node_in_spanning_tree[rand() % n_nodes] = true;
   do {
     for (unsigned i = edges.size() - 1; i >= 0; --i) {
-      GraphEdge edge = edges[i];
+      Edge edge = edges[i];
       bool first_node_inside_tree = node_in_spanning_tree[edge.nodes[0]];
       bool second_node_inside_tree = node_in_spanning_tree[edge.nodes[1]];
 

@@ -7,25 +7,8 @@
 
 class BoruvkaMethod {
  public:
-  static void Process(unsigned n_nodes, const std::vector<GraphEdge>& edges,
-                      std::vector<GraphEdge>* spanning_tree_edges);
-
- private:
-  class Skeleton {
-   public:
-    explicit Skeleton(unsigned id) : id_(id), minimal_weighted_edge_(0) {}
-
-    void AddEdge(GraphEdge* edge);
-
-    GraphEdge* GetMinWeightEdge();
-
-    void MergeWith(Skeleton* skeleton);
-
-   private:
-    unsigned id_;
-    GraphEdge* minimal_weighted_edge_;
-    std::vector<GraphEdge*> edges_from_;
-  };
+  static void Process(unsigned n_nodes, const std::vector<Edge>& edges,
+                      std::vector<Edge>* spanning_tree_edges);
 };
 
 #endif  // INCLUDE_BORUVKA_METHOD_HPP_

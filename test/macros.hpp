@@ -7,22 +7,22 @@
 #include "include/graph.hpp"
 
 void GenGraph(unsigned n_nodes, unsigned n_edges,
-              std::vector<GraphEdge>* edges);
+              std::vector<Edge>* edges);
 
 // Add edges for graph connectivity.
-void GenPath(unsigned n_nodes, std::vector<GraphEdge>* edges);
+void GenPath(unsigned n_nodes, std::vector<Edge>* edges);
 
 float RandWeight();
 
-float WeightsSum(const std::vector<GraphEdge>& edges);
+float WeightsSum(const std::vector<Edge>& edges);
 
 // Check that edges has different ids.
-bool CheckEdgesUniqueness(const std::vector<GraphEdge>& edges);
+bool CheckEdgesUniqueness(const std::vector<Edge>& edges);
 
 #endif  // TEST_MACROS_HPP_
 
 void GenGraph(unsigned n_nodes, unsigned n_edges,
-              std::vector<GraphEdge>* edges) {
+              std::vector<Edge>* edges) {
   GenPath(n_nodes, edges);
 
   std::vector<std::pair<int, int> > unused_edges;
@@ -31,7 +31,7 @@ void GenGraph(unsigned n_nodes, unsigned n_edges,
 
       bool is_used = false;
       for (int i = 0; i < edges->size(); ++i) {
-        GraphEdge edge = edges->operator[](i);
+        Edge edge = edges->operator[](i);
         if (edge.nodes[0] == from && edge.nodes[1] == to ||
             edge.nodes[0] == to && edge.nodes[1] == from) {
           is_used = true;
@@ -45,8 +45,7 @@ void GenGraph(unsigned n_nodes, unsigned n_edges,
   }
 
   n_edges = n_edges - edges->size();
-  GraphEdge edge;
-  edge.id = edges->size();
+  Edge edge;
   for (int i = 0; i < n_edges; ++i) {
     unsigned idx = rand() % unused_edges.size();
     edge.nodes[0] = unused_edges[idx].first;
@@ -54,11 +53,10 @@ void GenGraph(unsigned n_nodes, unsigned n_edges,
     edge.weight = RandWeight();
     edges->push_back(edge);
     unused_edges.erase(unused_edges.begin() + idx);
-    ++edge.id;
   }
 }
 
-void GenPath(unsigned n_nodes, std::vector<GraphEdge>* edges) {
+void GenPath(unsigned n_nodes, std::vector<Edge>* edges) {
   edges->clear();
 
   std::vector<unsigned> unvisited_nodes(n_nodes - 1);
@@ -66,8 +64,7 @@ void GenPath(unsigned n_nodes, std::vector<GraphEdge>* edges) {
     unvisited_nodes[i - 1] = i;
   }
 
-  GraphEdge edge;
-  edge.id = 0;
+  Edge edge;
   edge.nodes[0] = 0;
   for (unsigned i = 1; i < n_nodes; ++i) {
     unsigned idx = rand() % unvisited_nodes.size();
@@ -77,7 +74,6 @@ void GenPath(unsigned n_nodes, std::vector<GraphEdge>* edges) {
     edge.weight = RandWeight();
     edges->push_back(edge);
     edge.nodes[0] = edge.nodes[1];
-    ++edge.id;
   }
 }
 
@@ -85,7 +81,7 @@ float RandWeight() {
   return static_cast<float>(rand() % 100 + 1) / 100;
 }
 
-float WeightsSum(const std::vector<GraphEdge>& edges) {
+float WeightsSum(const std::vector<Edge>& edges) {
   const unsigned n_edges = edges.size();
   float cost = 0;
   for (unsigned i = 0; i < n_edges; ++i) {
@@ -94,11 +90,11 @@ float WeightsSum(const std::vector<GraphEdge>& edges) {
   return cost;
 }
 
-bool CheckEdgesUniqueness(const std::vector<GraphEdge>& edges) {
-  std::set<unsigned> unique_ids;
+bool CheckEdgesUniqueness(const std::vector<Edge>& edges) {
+  std::set<const Edge*> unique_ids;
   const unsigned n_edges = edges.size();
   for (unsigned i = 0; i < n_edges; ++i) {
-    if (!unique_ids.insert(edges[i].id).second) {
+    if (!unique_ids.insert(&edges[i]).second) {
       return false;
     }
   }
