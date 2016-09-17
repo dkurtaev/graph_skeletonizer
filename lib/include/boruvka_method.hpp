@@ -9,14 +9,6 @@ class BoruvkaMethod {
  public:
   static void Process(unsigned n_nodes, const std::vector<GraphEdge>& edges,
                       std::vector<GraphEdge>* spanning_tree_edges);
-
- private:
-  static unsigned GetGroupId(unsigned node,
-                             std::vector<unsigned>& group_ids);
-
-  static void Merge(unsigned src, unsigned dst,
-                    std::vector<unsigned>& group_ids,
-                    std::vector<unsigned>& ranks);
 };
 
 #endif  // INCLUDE_BORUVKA_METHOD_HPP_
