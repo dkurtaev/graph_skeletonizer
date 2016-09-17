@@ -56,7 +56,11 @@ void BoruvkaMethod::Process(unsigned n_nodes,
 
 unsigned BoruvkaMethod::GetGroupId(unsigned node,
                                    const std::vector<unsigned>& group_ids) {
-  return group_ids[node];
+  unsigned parent_id = group_ids[node];
+  while (parent_id != group_ids[parent_id]) {
+    parent_id = group_ids[parent_id];
+  }
+  return parent_id;
 }
 
 void BoruvkaMethod::Merge(unsigned src, unsigned dst,
@@ -64,10 +68,5 @@ void BoruvkaMethod::Merge(unsigned src, unsigned dst,
   unsigned src_id = GetGroupId(src, *group_ids);
   unsigned dst_id = GetGroupId(dst, *group_ids);
 
-  const unsigned n_groups = group_ids->size();
-  for (unsigned i = 0; i < n_groups; ++i) {
-    if (group_ids->operator[](i) == src_id) {
-      group_ids->operator[](i) = dst_id;
-    }
-  }
+  group_ids->operator[](src_id) = dst_id;
 }
