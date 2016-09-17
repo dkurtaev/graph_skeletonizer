@@ -10,91 +10,50 @@ void BoruvkaMethod::Process(unsigned n_nodes,
   spanning_tree_edges->clear();
   spanning_tree_edges->reserve(n_nodes - 1);
 
-  std::vector<Skeleton*> skeletons(n_nodes);
+  // For each node indicate group id.
+  std::vector<unsigned> group_ids(n_nodes);
   for (unsigned i = 0; i < n_nodes; ++i) {
-    skeletons[i] = new Skeleton(i);
+    group_ids[i] = i;
   }
 
-  std::vector<GraphEdge> edges(graph_edges);
-  unsigned n_edges = edges.size();
-  for (unsigned i = 0; i < n_edges; ++i) {
-    GraphEdge* edge = &edges[i];
-    skeletons[edge->nodes[0]]->AddEdge(edge);
-    skeletons[edge->nodes[1]]->AddEdge(edge);
-  }
-
-  GraphEdge* edge = 0;
-  std::vector<GraphEdge*> min_weight_edges;
+  const unsigned n_edges = graph_edges.size();
+  const GraphEdge* edge = 0;
   do {
-    // Collect minimal weighted edges.
-    min_weight_edges.clear();
-    for (unsigned i = 0; i < n_nodes; ++i) {
-      edge = skeletons[i]->GetMinWeightEdge();
-      if (edge) {
-        min_weight_edges.push_back(edge);
+    std::vector<const GraphEdge*> min_weight_edges(n_nodes, 0);
+    for (unsigned i = 0; i < n_edges; ++i) {
+      edge = &graph_edges[i];
+      unsigned first_group_id = group_ids[edge->nodes[0]];
+      unsigned second_group_id = group_ids[edge->nodes[1]];
+      if (first_group_id != second_group_id) {
+        if (!min_weight_edges[first_group_id] ||
+            edge->weight < min_weight_edges[first_group_id]->weight ||
+            edge->weight == min_weight_edges[first_group_id]->weight &&
+            edge->id == min_weight_edges[first_group_id]->id) {
+          min_weight_edges[first_group_id] = edge;
+        }
+        if (!min_weight_edges[second_group_id] ||
+            edge->weight < min_weight_edges[second_group_id]->weight ||
+            edge->weight == min_weight_edges[second_group_id]->weight &&
+            edge->id == min_weight_edges[second_group_id]->id) {
+          min_weight_edges[second_group_id] = edge;
+        }
       }
     }
-    // Merge skeletons.
-    n_edges = min_weight_edges.size();
-    for (unsigned i = 0; i < n_edges; ++i) {
+
+    for (unsigned i = 0; i < n_nodes; ++i) {
       edge = min_weight_edges[i];
-      unsigned first_skeleton_id = edge->nodes[0];
-      unsigned second_skeleton_id = edge->nodes[1];
-      // If not merged already (with previous skeleton).
-      if (first_skeleton_id != second_skeleton_id) {
-        skeletons[first_skeleton_id]->MergeWith(skeletons[second_skeleton_id]);
-        edge->nodes[0] = edge->nodes[1];  // Disable this edge.
-        spanning_tree_edges->push_back(graph_edges[edge->id]);
+      if (edge) {
+        unsigned first_group_id = group_ids[edge->nodes[0]];
+        unsigned second_group_id = group_ids[edge->nodes[1]];
+        if (first_group_id != second_group_id) {
+          spanning_tree_edges->push_back(*edge);
+          for (unsigned j = 0; j < n_nodes; ++j) {
+            if (group_ids[j] == second_group_id) {
+              group_ids[j] = first_group_id;
+            }
+          }
+        }
       }
     }
   } while (spanning_tree_edges->size() != n_nodes - 1);
-
-  for (unsigned i = 0; i < n_nodes; ++i) {
-    delete skeletons[i];
-  }
-}
-
-void BoruvkaMethod::Skeleton::AddEdge(GraphEdge* edge) {
-  if (!minimal_weighted_edge_ ||
-      edge->weight < minimal_weighted_edge_->weight ||
-      edge->weight == minimal_weighted_edge_->weight &&
-      edge->id < minimal_weighted_edge_->id) {
-    minimal_weighted_edge_ = edge;
-  }
-  edges_from_.push_back(edge);
-}
-
-GraphEdge* BoruvkaMethod::Skeleton::GetMinWeightEdge() {
-  return minimal_weighted_edge_;
-}
-
-void BoruvkaMethod::Skeleton::MergeWith(Skeleton* skeleton) {
-  // Remove edges between [this] skeleton and merged.
-  minimal_weighted_edge_ = 0;
-  GraphEdge* edge = 0;
-  unsigned n_edges = edges_from_.size();
-  for (unsigned i = 0; i < n_edges; ++i) {
-    edge = edges_from_[i];
-    if (edge->nodes[0] != skeleton->id_ && edge->nodes[1] != skeleton->id_) {
-      AddEdge(edge);  // Push at the end.
-    }
-  }
-  edges_from_.erase(edges_from_.begin(), edges_from_.begin() + n_edges);
-
-  // Add edges from merged skeleton, replace id.
-  n_edges = skeleton->edges_from_.size();
-  for (unsigned i = 0; i < n_edges; ++i) {
-    edge = skeleton->edges_from_[i];
-    if (edge->nodes[0] != this->id_ && edge->nodes[1] != this->id_) {
-      // Replace ids for external edges.
-      if (edge->nodes[0] == skeleton->id_) {
-        edge->nodes[0] = this->id_;
-      } else {
-        edge->nodes[1] = this->id_;
-      }
-      AddEdge(edge);
-    }
-  }
-
-  skeleton->minimal_weighted_edge_ = 0;
 }
