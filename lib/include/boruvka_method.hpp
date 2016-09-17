@@ -15,7 +15,8 @@ class BoruvkaMethod {
                              const std::vector<unsigned>& group_ids);
 
   static void Merge(unsigned src, unsigned dst,
-                    std::vector<unsigned>* group_ids);
+                    std::vector<unsigned>* group_ids,
+                    std::vector<unsigned>* subtree_depths);
 };
 
 #endif  // INCLUDE_BORUVKA_METHOD_HPP_

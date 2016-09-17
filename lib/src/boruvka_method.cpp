@@ -11,7 +11,9 @@ void BoruvkaMethod::Process(unsigned n_nodes,
   spanning_tree_edges->reserve(n_nodes - 1);
 
   // For each node indicate group id.
+  std::vector<GraphEdge> edges(graph_edges);
   std::vector<unsigned> group_ids(n_nodes);
+  std::vector<unsigned> subtree_depths(n_nodes, 0);
   for (unsigned i = 0; i < n_nodes; ++i) {
     group_ids[i] = i;
   }
@@ -47,7 +49,7 @@ void BoruvkaMethod::Process(unsigned n_nodes,
         unsigned second_group_id = GetGroupId(edge->nodes[1], group_ids);
         if (first_group_id != second_group_id) {
           spanning_tree_edges->push_back(*edge);
-          Merge(second_group_id, first_group_id, &group_ids);
+          Merge(second_group_id, first_group_id, &group_ids, &subtree_depths);
         }
       }
     }
@@ -64,9 +66,17 @@ unsigned BoruvkaMethod::GetGroupId(unsigned node,
 }
 
 void BoruvkaMethod::Merge(unsigned src, unsigned dst,
-                          std::vector<unsigned>* group_ids) {
+                          std::vector<unsigned>* group_ids,
+                          std::vector<unsigned>* subtree_depths) {
   unsigned src_id = GetGroupId(src, *group_ids);
   unsigned dst_id = GetGroupId(dst, *group_ids);
 
-  group_ids->operator[](src_id) = dst_id;
+  if (subtree_depths->operator[](src_id) <=
+      subtree_depths->operator[](dst_id)) {
+    group_ids->operator[](src_id) = dst_id;
+    subtree_depths->operator[](dst_id) += 1;
+  } else {
+    group_ids->operator[](dst_id) = src_id;
+    subtree_depths->operator[](src_id) += 1;
+  }
 }
