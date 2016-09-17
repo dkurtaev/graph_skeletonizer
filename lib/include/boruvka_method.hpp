@@ -11,21 +11,12 @@ class BoruvkaMethod {
                       std::vector<GraphEdge>* spanning_tree_edges);
 
  private:
-  class Skeleton {
-   public:
-    explicit Skeleton(unsigned id) : id_(id), minimal_weighted_edge_(0) {}
+  static unsigned GetGroupId(unsigned node,
+                             std::vector<unsigned>& group_ids);
 
-    void AddEdge(GraphEdge* edge);
-
-    GraphEdge* GetMinWeightEdge();
-
-    void MergeWith(Skeleton* skeleton);
-
-   private:
-    unsigned id_;
-    GraphEdge* minimal_weighted_edge_;
-    std::vector<GraphEdge*> edges_from_;
-  };
+  static void Merge(unsigned src, unsigned dst,
+                    std::vector<unsigned>& group_ids,
+                    std::vector<unsigned>& ranks);
 };
 
 #endif  // INCLUDE_BORUVKA_METHOD_HPP_
