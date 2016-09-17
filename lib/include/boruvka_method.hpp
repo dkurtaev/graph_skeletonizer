@@ -12,11 +12,11 @@ class BoruvkaMethod {
 
  private:
   static unsigned GetGroupId(unsigned node,
-                             const std::vector<unsigned>& group_ids);
+                             std::vector<unsigned>& group_ids);
 
   static void Merge(unsigned src, unsigned dst,
-                    std::vector<unsigned>* group_ids,
-                    std::vector<unsigned>* subtree_depths);
+                    std::vector<unsigned>& group_ids,
+                    std::vector<unsigned>& ranks);
 };
 
 #endif  // INCLUDE_BORUVKA_METHOD_HPP_

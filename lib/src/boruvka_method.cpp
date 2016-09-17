@@ -13,7 +13,7 @@ void BoruvkaMethod::Process(unsigned n_nodes,
   // For each node indicate group id.
   std::vector<GraphEdge> edges(graph_edges);
   std::vector<unsigned> group_ids(n_nodes);
-  std::vector<unsigned> subtree_depths(n_nodes, 0);
+  std::vector<unsigned> ranks(n_nodes, 0);
   for (unsigned i = 0; i < n_nodes; ++i) {
     group_ids[i] = i;
   }
@@ -49,7 +49,7 @@ void BoruvkaMethod::Process(unsigned n_nodes,
         unsigned second_group_id = GetGroupId(edge->nodes[1], group_ids);
         if (first_group_id != second_group_id) {
           spanning_tree_edges->push_back(*edge);
-          Merge(second_group_id, first_group_id, &group_ids, &subtree_depths);
+          Merge(second_group_id, first_group_id, group_ids, ranks);
         }
       }
     }
@@ -57,26 +57,38 @@ void BoruvkaMethod::Process(unsigned n_nodes,
 }
 
 unsigned BoruvkaMethod::GetGroupId(unsigned node,
-                                   const std::vector<unsigned>& group_ids) {
+                                   std::vector<unsigned>& group_ids) {
   unsigned parent_id = group_ids[node];
   while (parent_id != group_ids[parent_id]) {
     parent_id = group_ids[parent_id];
   }
+
+  // Paths compression.
+  unsigned id = group_ids[node];
+  group_ids[node] = parent_id;
+  while (id != parent_id) {
+    unsigned next_id = group_ids[id];
+    group_ids[id] = parent_id;
+    id = next_id;
+  }
+
   return parent_id;
 }
 
 void BoruvkaMethod::Merge(unsigned src, unsigned dst,
-                          std::vector<unsigned>* group_ids,
-                          std::vector<unsigned>* subtree_depths) {
-  unsigned src_id = GetGroupId(src, *group_ids);
-  unsigned dst_id = GetGroupId(dst, *group_ids);
+                          std::vector<unsigned>& group_ids,
+                          std::vector<unsigned>& ranks) {
+  unsigned src_id = GetGroupId(src, group_ids);
+  unsigned dst_id = GetGroupId(dst, group_ids);
+  unsigned src_rank = ranks[src_id];
+  unsigned dst_rank = ranks[dst_id];
 
-  if (subtree_depths->operator[](src_id) <=
-      subtree_depths->operator[](dst_id)) {
-    group_ids->operator[](src_id) = dst_id;
-    subtree_depths->operator[](dst_id) += 1;
+  if (src_rank < dst_rank) {
+    group_ids[src_id] = dst_id;
+  } else if (src_rank > dst_rank) {
+    group_ids[dst_id] = src_id;
   } else {
-    group_ids->operator[](dst_id) = src_id;
-    subtree_depths->operator[](src_id) += 1;
+    group_ids[src_id] = dst_id;
+    ++ranks[dst_id];
   }
 }
