@@ -4,7 +4,7 @@
 
 #include <set>
 
-void GraphGenerator::GenGraph(unsigned n_nodes, std::vector<GraphEdge>* edges) {
+void GraphGenerator::GenGraph(unsigned n_nodes, std::vector<Edge>* edges) {
   const unsigned min_n_edges = n_nodes - 1;  // For connectivity.
   const unsigned max_n_edges = n_nodes * (n_nodes - 1) / 2;
   int n_edges = rand() % (max_n_edges - min_n_edges + 1) + min_n_edges;
@@ -12,7 +12,7 @@ void GraphGenerator::GenGraph(unsigned n_nodes, std::vector<GraphEdge>* edges) {
 }
 
 unsigned GraphGenerator::GenGraph(unsigned min_n_nodes, unsigned max_n_nodes,
-                                  std::vector<GraphEdge>* edges) {
+                                  std::vector<Edge>* edges) {
   int n_nodes = rand() % (max_n_nodes - min_n_nodes + 1) + min_n_nodes;
   GenGraph(n_nodes, edges);
   return n_nodes;
@@ -20,12 +20,12 @@ unsigned GraphGenerator::GenGraph(unsigned min_n_nodes, unsigned max_n_nodes,
 
 void GraphGenerator::GenGraph(unsigned n_nodes, unsigned n_edges,
                               float min_weight, float max_weight,
-                              std::vector<GraphEdge>* edges) {
+                              std::vector<Edge>* edges) {
   GenPath(n_nodes, min_weight, max_weight, edges);
 
   std::set<unsigned> used_edges;
   for (unsigned i = 0; i < n_nodes - 1; ++i) {
-    GraphEdge* edge = &edges->operator[](i);
+    Edge* edge = &edges->operator[](i);
     unsigned id_1 = edge->nodes[0];
     unsigned id_2 = edge->nodes[1];
     if (id_1 < id_2) {
@@ -36,8 +36,7 @@ void GraphGenerator::GenGraph(unsigned n_nodes, unsigned n_edges,
   }
 
   n_edges = n_edges - edges->size();
-  GraphEdge edge;
-  edge.id = edges->size();
+  Edge edge;
   for (int i = 0; i < n_edges; ++i) {
     edge.weight = RandWeight(min_weight, max_weight);
 
@@ -57,12 +56,11 @@ void GraphGenerator::GenGraph(unsigned n_nodes, unsigned n_edges,
     edge.nodes[1] = id_2;
 
     edges->push_back(edge);
-    ++edge.id;
   }
 }
 
 void GraphGenerator::GenPath(unsigned n_nodes, float min_weight,
-                             float max_weight, std::vector<GraphEdge>* edges) {
+                             float max_weight, std::vector<Edge>* edges) {
   edges->clear();
 
   std::vector<unsigned> unvisited_nodes(n_nodes - 1);
@@ -70,8 +68,7 @@ void GraphGenerator::GenPath(unsigned n_nodes, float min_weight,
     unvisited_nodes[i - 1] = i;
   }
 
-  GraphEdge edge;
-  edge.id = 0;
+  Edge edge;
   edge.nodes[0] = 0;
   for (unsigned i = 1; i < n_nodes; ++i) {
     unsigned idx = rand() % unvisited_nodes.size();
@@ -81,7 +78,6 @@ void GraphGenerator::GenPath(unsigned n_nodes, float min_weight,
     edge.weight = RandWeight(min_weight, max_weight);
     edges->push_back(edge);
     edge.nodes[0] = edge.nodes[1];
-    ++edge.id;
   }
 }
 

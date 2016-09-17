@@ -17,7 +17,7 @@ TEST(Graph, reading_from_file) {
   static const float kZeroLimit = 1e-5f;
 
   for (unsigned iter = 0; iter < kNumGenerations; ++iter) {
-    std::vector<GraphEdge> target_edges;
+    std::vector<Edge> target_edges;
     int n_nodes = GraphGenerator::GenGraph(kMinNumNodes, kMaxNumNodes,
                                            &target_edges);
     int n_edges = target_edges.size();
@@ -34,7 +34,7 @@ TEST(Graph, reading_from_file) {
 
     // Graph creating.
     Graph graph(file_path);
-    std::vector<GraphEdge> received_edges;
+    std::vector<Edge> received_edges;
     graph.GetEdges(&received_edges);
 
     ASSERT_EQ(n_edges, received_edges.size());

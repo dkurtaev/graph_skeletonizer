@@ -10,12 +10,12 @@
 #include "include/prim_method.hpp"
 #include "include/random_spanning_tree.hpp"
 
-void TestCorrectness(void (*Method)(unsigned, const std::vector<GraphEdge>&,
-                                    std::vector<GraphEdge>*));
+void TestCorrectness(void (*Method)(unsigned, const std::vector<Edge>&,
+                                    std::vector<Edge>*));
 
 void TestIsBetterThanRandom(void (*Method)(unsigned,
-                                           const std::vector<GraphEdge>&,
-                                           std::vector<GraphEdge>*));
+                                           const std::vector<Edge>&,
+                                           std::vector<Edge>*));
 
 TEST(BoruvkaMethod, spanning_tree_correctness) {
   TestCorrectness(BoruvkaMethod::Process);
@@ -45,14 +45,14 @@ TEST(PrimMethod, is_better_than_random) {
   TestIsBetterThanRandom(PrimMethod::Process);
 }
 
-void TestCorrectness(void (*Method)(unsigned, const std::vector<GraphEdge>&,
-                                    std::vector<GraphEdge>*)) {
+void TestCorrectness(void (*Method)(unsigned, const std::vector<Edge>&,
+                                    std::vector<Edge>*)) {
   static const unsigned kNumGenerations = 10000;
   static const unsigned kMinNumNodes = 3;
   static const unsigned kMaxNumNodes = 25;
 
-  std::vector<GraphEdge> edges;
-  std::vector<GraphEdge> spanning_tree;
+  std::vector<Edge> edges;
+  std::vector<Edge> spanning_tree;
   for (unsigned iter = 0; iter < kNumGenerations; ++iter) {
     int n_nodes = GraphGenerator::GenGraph(kMinNumNodes, kMaxNumNodes, &edges);
 
@@ -63,15 +63,15 @@ void TestCorrectness(void (*Method)(unsigned, const std::vector<GraphEdge>&,
 }
 
 void TestIsBetterThanRandom(void (*Method)(unsigned,
-                                           const std::vector<GraphEdge>&,
-                                           std::vector<GraphEdge>*)) {
+                                           const std::vector<Edge>&,
+                                           std::vector<Edge>*)) {
   static const unsigned kNumGenerations = 10000;
   static const unsigned kMinNumNodes = 3;
   static const unsigned kMaxNumNodes = 25;
   static const float kZeroLimit = 1e-5f;
 
-  std::vector<GraphEdge> edges;
-  std::vector<GraphEdge> spanning_tree;
+  std::vector<Edge> edges;
+  std::vector<Edge> spanning_tree;
   for (unsigned iter = 0; iter < kNumGenerations; ++iter) {
     int n_nodes = GraphGenerator::GenGraph(kMinNumNodes, kMaxNumNodes, &edges);
 

@@ -20,9 +20,9 @@ const char* kCmdParams =
     "{ prim    | prim | false | Using Prim's method }"
     "{ q | quiet | false | Output only times of processing, if true }";
 
-void Measurement(void (*Method)(unsigned, const std::vector<GraphEdge>&,
-                                std::vector<GraphEdge>*),
-                 unsigned n_nodes, const std::vector<GraphEdge>& edges,
+void Measurement(void (*Method)(unsigned, const std::vector<Edge>&,
+                                std::vector<Edge>*),
+                 unsigned n_nodes, const std::vector<Edge>& edges,
                  std::string header, bool is_quiet);
 
 int main(int argc, char** argv) {
@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  std::vector<GraphEdge> edges;
+  std::vector<Edge> edges;
   GraphGenerator::GenGraph(n_nodes, n_edges, min_weight, max_weight, &edges);
   if (!is_quiet) {
     std::cout << "Generated graph with " << n_nodes << " nodes and "
@@ -72,12 +72,12 @@ int main(int argc, char** argv) {
   return 0;
 }
 
-void Measurement(void (*Method)(unsigned, const std::vector<GraphEdge>&,
-                                std::vector<GraphEdge>*),
-                 unsigned n_nodes, const std::vector<GraphEdge>& edges,
+void Measurement(void (*Method)(unsigned, const std::vector<Edge>&,
+                                std::vector<Edge>*),
+                 unsigned n_nodes, const std::vector<Edge>& edges,
                  std::string header, bool is_quiet) {
   timeval start_time, end_time;
-  std::vector<GraphEdge> spanning_tree;
+  std::vector<Edge> spanning_tree;
 
   gettimeofday(&start_time, 0);
   Method(n_nodes, edges, &spanning_tree);

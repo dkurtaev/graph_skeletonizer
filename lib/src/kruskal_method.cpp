@@ -5,25 +5,24 @@
 
 #include "include/sets_separator.hpp"
 
-bool KruskalMethod::EdgesComparator(const GraphEdge& first,
-                                    const GraphEdge& second) {
+bool KruskalMethod::EdgesComparator(const Edge& first, const Edge& second) {
   return first.weight < second.weight;
 }
 
 void KruskalMethod::Process(unsigned n_nodes,
-                            const std::vector<GraphEdge>& graph_edges,
-                            std::vector<GraphEdge>* spanning_tree_edges) {
+                            const std::vector<Edge>& graph_edges,
+                            std::vector<Edge>* spanning_tree_edges) {
   spanning_tree_edges->clear();
   spanning_tree_edges->reserve(n_nodes - 1);
 
-  std::vector<GraphEdge> edges(graph_edges);
+  std::vector<Edge> edges(graph_edges);
   std::sort(edges.begin(), edges.end(), EdgesComparator);
 
   // Sets for grouping nodes.
   SetsSeparator separator(n_nodes);
 
   const unsigned n_edges = graph_edges.size();
-  const GraphEdge* edge = 0;
+  const Edge* edge = 0;
   unsigned n_tree_edges = 0;
   for (unsigned i = 0; i < n_edges && n_tree_edges < n_nodes - 1; ++i) {
     edge = &edges[i];
