@@ -87,6 +87,8 @@ void Measurement(void (*Method)(unsigned, const std::vector<Edge>&,
                           (end_time.tv_usec - start_time.tv_usec) * 1e-3;
    if (!is_quiet) {
      std::cout << header << elapsed_time << " ms" << std::endl;
+     Graph gr(n_nodes, edges);
+     gr.WriteDot("./graph.dot", spanning_tree);
    } else {
      std::cout << elapsed_time << std::endl;
    }

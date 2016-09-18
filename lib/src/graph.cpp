@@ -36,7 +36,8 @@ Graph::Graph(const std::string& file_path) {
   file.close();
 }
 
-void Graph::WriteDot(const std::string& file_path) const {
+void Graph::WriteDot(const std::string& file_path,
+                     const std::vector<Edge>& spanning_tree_edges) const {
   std::ofstream file(file_path.c_str());
   file << "graph {\n";
 
@@ -44,7 +45,23 @@ void Graph::WriteDot(const std::string& file_path) const {
   for (unsigned i = 0; i < n_edges; ++i) {
     std::ostringstream ss;
     ss << edges_[i].nodes[0] << "--" << edges_[i].nodes[1] << "[label=\""
-       << edges_[i].weight << "\"];\n";
+       << edges_[i].weight << "\"";
+
+    bool edge_in_spanning_tree = false;
+    for (unsigned j = 0; j < spanning_tree_edges.size(); ++j) {
+      const Edge* spanning_tree_edge = &spanning_tree_edges[j];
+      if (spanning_tree_edge->nodes[0] == edges_[i].nodes[0] &&
+          spanning_tree_edge->nodes[1] == edges_[i].nodes[1] ||
+          spanning_tree_edge->nodes[0] == edges_[i].nodes[1] &&
+          spanning_tree_edge->nodes[1] == edges_[i].nodes[0]) {
+        edge_in_spanning_tree = true;
+        break;
+      }
+    }
+    if (edge_in_spanning_tree) {
+      ss << ", color=\"red\", fontcolor=\"red\"";
+    }
+    ss << "];\n";
     file << ss.str();
   }
   file << "}\n";
