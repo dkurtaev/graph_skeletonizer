@@ -1,18 +1,9 @@
 #ifndef TEST_MACROS_HPP_
 #define TEST_MACROS_HPP_
 
-#include <utility>
 #include <set>
 
 #include "include/graph.hpp"
-
-void GenGraph(unsigned n_nodes, unsigned n_edges,
-              std::vector<Edge>* edges);
-
-// Add edges for graph connectivity.
-void GenPath(unsigned n_nodes, std::vector<Edge>* edges);
-
-float RandWeight();
 
 float WeightsSum(const std::vector<Edge>& edges);
 
@@ -21,65 +12,6 @@ bool CheckEdgesUniqueness(const std::vector<Edge>& edges);
 
 #endif  // TEST_MACROS_HPP_
 
-void GenGraph(unsigned n_nodes, unsigned n_edges,
-              std::vector<Edge>* edges) {
-  GenPath(n_nodes, edges);
-
-  std::vector<std::pair<int, int> > unused_edges;
-  for (int from = 0; from < n_nodes - 1; ++from) {
-    for (int to = from + 1; to < n_nodes; ++to) {
-
-      bool is_used = false;
-      for (int i = 0; i < edges->size(); ++i) {
-        Edge edge = edges->operator[](i);
-        if (edge.nodes[0] == from && edge.nodes[1] == to ||
-            edge.nodes[0] == to && edge.nodes[1] == from) {
-          is_used = true;
-          break;
-        }
-      }
-      if (!is_used) {
-        unused_edges.push_back(std::pair<int, int>(from, to));
-      }
-    }
-  }
-
-  n_edges = n_edges - edges->size();
-  Edge edge;
-  for (int i = 0; i < n_edges; ++i) {
-    unsigned idx = rand() % unused_edges.size();
-    edge.nodes[0] = unused_edges[idx].first;
-    edge.nodes[1] = unused_edges[idx].second;
-    edge.weight = RandWeight();
-    edges->push_back(edge);
-    unused_edges.erase(unused_edges.begin() + idx);
-  }
-}
-
-void GenPath(unsigned n_nodes, std::vector<Edge>* edges) {
-  edges->clear();
-
-  std::vector<unsigned> unvisited_nodes(n_nodes - 1);
-  for (unsigned i = 1; i < n_nodes; ++i) {
-    unvisited_nodes[i - 1] = i;
-  }
-
-  Edge edge;
-  edge.nodes[0] = 0;
-  for (unsigned i = 1; i < n_nodes; ++i) {
-    unsigned idx = rand() % unvisited_nodes.size();
-    edge.nodes[1] = unvisited_nodes[idx];
-    unvisited_nodes.erase(unvisited_nodes.begin() + idx);
-
-    edge.weight = RandWeight();
-    edges->push_back(edge);
-    edge.nodes[0] = edge.nodes[1];
-  }
-}
-
-float RandWeight() {
-  return static_cast<float>(rand() % 100 + 1) / 100;
-}
 
 float WeightsSum(const std::vector<Edge>& edges) {
   const unsigned n_edges = edges.size();

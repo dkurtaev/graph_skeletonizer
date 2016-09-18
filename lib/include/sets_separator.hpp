@@ -5,7 +5,7 @@
 
 class SetsSeparator {
  public:
-  SetsSeparator(unsigned n_sets);
+  explicit SetsSeparator(unsigned n_sets);
 
   // If set is merged with others, return id of parent set.
   unsigned GetSetDestination(unsigned set_id);
