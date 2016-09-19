@@ -41,10 +41,13 @@ int main(int argc, char** argv) {
   const bool use_prim = parser.get<bool>("prim");
   const bool is_quiet = parser.get<bool>("quiet");
 
-  if (!GraphGenerator::GraphParametersIsCorrect(n_nodes, n_edges)) {
+  unsigned min_n_edges, max_n_edges;
+  GraphGenerator::GetNumberOfEdgesLimits(n_nodes, &min_n_edges, &max_n_edges);
+  if (n_edges < min_n_edges || max_n_edges < n_edges) {
     if (!is_quiet) {
-      std::cout << "Incorrect graph parameters: " << n_nodes << " nodes and "
-                << n_edges << " edges" << std::endl;
+      std::cout << "For graph with " << n_nodes << " nodes number of edges "
+                << "should be in [" << min_n_edges << ", " << max_n_edges << "]"
+                << std::endl;
     }
     return 1;
   }

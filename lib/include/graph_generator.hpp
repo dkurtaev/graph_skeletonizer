@@ -17,7 +17,8 @@ class GraphGenerator {
   static unsigned GenGraph(unsigned min_n_nodes, unsigned max_n_nodes,
                            std::vector<Edge>* edges);
 
-  static bool GraphParametersIsCorrect(unsigned n_nodes, unsigned n_edges);
+  static void GetNumberOfEdgesLimits(unsigned n_nodes, unsigned* min_n_edges,
+                                     unsigned* max_n_edges);
 
  private:
   static float RandWeight(float min_weight, float max_weight,
