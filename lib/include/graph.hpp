@@ -31,6 +31,10 @@ class Graph {
 
   unsigned GetNumberNodes() const;
 
+  static float WeightsSum(const std::vector<Edge>& edges);
+
+  static bool CheckEdgesUniqueness(const std::vector<Edge>& edges);
+
  private:
   unsigned n_nodes_;
   std::vector<Edge> edges_;

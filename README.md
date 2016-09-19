@@ -1,6 +1,6 @@
 # Algorithms analysis and design lab work.
 
-[![Build Status](https://travis-ci.org/dkurtaev/graph_skeletonizer.svg?branch=master)](https://travis-ci.org/dkurtaev/graph_skeletonizer)
+[![Build Status](https://travis-ci.org/dkurtaev/minimal_spanning_tree.svg?branch=master)](https://travis-ci.org/dkurtaev/minimal_spanning_tree)
 
 Minimal edge-weighted graph skeleton.  
 Different methods implementation and comparison.

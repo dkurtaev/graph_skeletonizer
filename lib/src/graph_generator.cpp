@@ -1,9 +1,6 @@
 #include "include/graph_generator.hpp"
 
-#include <stdlib.h>
-
 #include <utility>
-#include <set>
 #include <vector>
 #include <algorithm>
 

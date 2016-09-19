@@ -1,7 +1,5 @@
 #include "include/sets_separator.hpp"
 
-#include <vector>
-
 SetsSeparator::SetsSeparator(unsigned n_sets)
   : parents(n_sets), ranks(n_sets, 0) {
   for (unsigned i = 0; i < n_sets; ++i) {
