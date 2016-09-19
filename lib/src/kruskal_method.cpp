@@ -26,12 +26,9 @@ void KruskalMethod::Process(unsigned n_nodes,
   unsigned n_tree_edges = 0;
   for (unsigned i = 0; i < n_edges && n_tree_edges < n_nodes - 1; ++i) {
     edge = &edges[i];
-    unsigned first_group_id = separator.GetSetDestination(edge->nodes[0]);
-    unsigned second_group_id = separator.GetSetDestination(edge->nodes[1]);
-    if (first_group_id != second_group_id) {
+    if (separator.Merge(edge->nodes[0], edge->nodes[1])) {
       ++n_tree_edges;
       spanning_tree_edges->push_back(*edge);
-      separator.Merge(first_group_id, second_group_id);
     }
   }
 }

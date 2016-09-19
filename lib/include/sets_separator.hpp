@@ -10,8 +10,8 @@ class SetsSeparator {
   // If set is merged with others, return id of parent set.
   unsigned GetSetDestination(unsigned set_id);
 
-  // Merge two sets.
-  void Merge(unsigned first_set_id, unsigned second_set_id);
+  // Merge two sets. Return false if are already merged.
+  bool Merge(unsigned first_set_id, unsigned second_set_id);
 
  private:
   std::vector<unsigned> parents;
