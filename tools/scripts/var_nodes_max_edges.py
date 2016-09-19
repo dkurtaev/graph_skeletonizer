@@ -13,13 +13,13 @@ args = parser.parse_args()
 outfile = './times_%.1fmax_edges_%s.txt'
 cmd = '%s -n %d -m %d -min_w %f -max_w %f -%s -q | xargs echo >> ' + outfile
 
-for scale in [1.0, 0,1]:
+for scale in [1.0, 0.1]:
     for method in ['boruvka', 'kruskal']:
         open(outfile % (scale, method), 'wt').close()
         for n_nodes in range(101, 10002, 100):
             n_edges = scale * n_nodes * (n_nodes - 1) / 2
             os.system(cmd % (args.tool, n_nodes, n_edges, 1.0, 1e+6, method,
-                             method))
+                             scale, method))
 
     for method in ['boruvka', 'kruskal']:
         with open(outfile % (scale, method), 'rt') as file:

@@ -24,7 +24,8 @@ class Graph {
   explicit Graph(const std::string& file_path);
 
   // Writing .dot file for graph visualization.
-  void WriteDot(const std::string& file_path) const;
+  void WriteDot(const std::string& file_path,
+                const std::vector<Edge>& spanning_tree_edges) const;
 
   void GetEdges(std::vector<Edge>* edges) const;
 
