@@ -16,14 +16,14 @@ titles = ['#edges = 100n',
           '#edges = 0.1n^2',
           '#edges = n(n-1)/2']
 
-n_set = np.arange(101, 10002, 100)
-n_edges = [100 * n_set,
-           1000 * n_set,
-           0.1 * n_set ** 2,
-           n_set * (n_set - 1) / 2]
+n_nodes = np.arange(101, 10002, 100)
+n_edges = [100 * n_nodes,
+           1000 * n_nodes,
+           0.1 * n_nodes ** 2,
+           n_nodes * (n_nodes - 1) / 2]
 
-theoretical = {'boruvka': lambda n, m: m * np.log(n),
-               'kruskal': lambda n, m: (m + n) * np.log(n)}
+theoretical = {'boruvka': lambda n, m: m * np.log(n) / np.log(2),
+               'kruskal': lambda n, m: (2 * m + n) * np.log(n) / np.log(2)}
 
 # Achieved time measurements.
 plt.figure(figsize=(15, 15))
@@ -32,7 +32,7 @@ for i in range(len(infile_names)):
     for method in ['boruvka', 'kruskal']:
         with open(infile_names[i] % method, 'rt') as file:
             times = [int(l.rstrip('\n')) if l != '\n' else 0 for l in file]
-        plt.plot(n_set, times, label=method)
+        plt.plot(n_nodes, times, label=method)
 
     plt.xlabel('Number of nodes, n')
     plt.ylabel('Time in milliseconds')
@@ -47,11 +47,11 @@ plt.clf()
 for i in range(len(infile_names)):
     plt.subplot(2, 2, i + 1)
     for method, theory in zip(['boruvka', 'kruskal'],
-                              ['m*log(n)', '(m+n)*log(n)']):
+                              ['m*log(n)', '(2m+n)*log(n)']):
         with open(infile_names[i] % method, 'rt') as file:
             times = [int(l.rstrip('\n')) if l != '\n' else 0 for l in file]
-        times = np.array(times) / theoretical[method](n_set, n_edges[i])
-        plt.plot(n_set, times, label='%s / %s' % (method, theory))
+        times = np.array(times) / theoretical[method](n_nodes, n_edges[i])
+        plt.plot(n_nodes, times, label='%s / %s' % (method, theory))
 
     plt.xlabel('Number of nodes, n')
     plt.ylabel('Time in milliseconds / theoretical estimation')
