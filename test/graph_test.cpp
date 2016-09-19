@@ -6,7 +6,6 @@
 
 #include "gtest/gtest.h"
 
-#include "test/macros.hpp"
 #include "include/graph_generator.hpp"
 #include "include/graph.hpp"
 

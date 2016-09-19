@@ -2,7 +2,6 @@
 
 #include "gtest/gtest.h"
 
-#include "test/macros.hpp"
 #include "include/graph_generator.hpp"
 #include "include/graph.hpp"
 #include "include/boruvka_method.hpp"
@@ -58,7 +57,7 @@ void TestCorrectness(void (*Method)(unsigned, const std::vector<Edge>&,
 
     Method(n_nodes, edges, &spanning_tree);
     ASSERT_EQ(spanning_tree.size(), n_nodes - 1);
-    ASSERT_TRUE(CheckEdgesUniqueness(spanning_tree));
+    ASSERT_TRUE(Graph::CheckEdgesUniqueness(spanning_tree));
   }
 }
 
@@ -76,10 +75,10 @@ void TestIsBetterThanRandom(void (*Method)(unsigned,
     int n_nodes = GraphGenerator::GenGraph(kMinNumNodes, kMaxNumNodes, &edges);
 
     Method(n_nodes, edges, &spanning_tree);
-    float method_spanning_tree_cost = WeightsSum(spanning_tree);
+    float method_spanning_tree_cost = Graph::WeightsSum(spanning_tree);
 
     RandomSpanningTree::Process(n_nodes, edges, &spanning_tree);
-    float random_spanning_tree_cost = WeightsSum(spanning_tree);
+    float random_spanning_tree_cost = Graph::WeightsSum(spanning_tree);
 
     ASSERT_LT(method_spanning_tree_cost - random_spanning_tree_cost,
               kZeroLimit);

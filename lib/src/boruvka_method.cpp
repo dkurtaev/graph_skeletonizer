@@ -35,13 +35,8 @@ void BoruvkaMethod::Process(unsigned n_nodes,
 
     for (unsigned i = 0; i < n_nodes; ++i) {
       edge = min_weight_edges[i];
-      if (edge) {
-        unsigned first_group_id = separator.GetSetDestination(edge->nodes[0]);
-        unsigned second_group_id = separator.GetSetDestination(edge->nodes[1]);
-        if (first_group_id != second_group_id) {
-          spanning_tree_edges->push_back(*edge);
-          separator.Merge(first_group_id, second_group_id);
-        }
+      if (edge && separator.Merge(edge->nodes[0], edge->nodes[1])) {
+        spanning_tree_edges->push_back(*edge);
       }
     }
   } while (spanning_tree_edges->size() != n_nodes - 1);

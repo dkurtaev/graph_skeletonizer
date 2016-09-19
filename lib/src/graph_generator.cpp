@@ -1,9 +1,6 @@
 #include "include/graph_generator.hpp"
 
-#include <stdlib.h>
-
 #include <utility>
-#include <set>
 #include <vector>
 #include <algorithm>
 
@@ -85,7 +82,9 @@ float GraphGenerator::RandWeight(float min_weight, float max_weight,
   return min_weight + step * (rand() % n_bins);
 }
 
-bool GraphGenerator::GraphParametersIsCorrect(unsigned n_nodes,
-                                              unsigned n_edges) {
-  return n_nodes - 1 <= n_edges && n_edges <= n_nodes * (n_nodes - 1) / 2;
+void GraphGenerator::GetNumberOfEdgesLimits(unsigned n_nodes,
+                                            unsigned* min_n_edges,
+                                            unsigned* max_n_edges) {
+  *min_n_edges = n_nodes - 1;
+  *max_n_edges = n_nodes * (n_nodes - 1) / 2;
 }
