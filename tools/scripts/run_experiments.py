@@ -2,7 +2,6 @@
 # NOTE: Script using relative path to tool, run this script from it's directory.
 import os
 import numpy as np
-import matplotlib.pyplot as plt
 import time
 
 tool = '../../build/bin/skeletonizer'
