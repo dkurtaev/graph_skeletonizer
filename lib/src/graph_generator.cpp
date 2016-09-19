@@ -62,15 +62,20 @@ void GraphGenerator::GenGraph(unsigned n_nodes, unsigned n_edges,
       ++offset;
     }
   }
-  std::random_shuffle(unsused_edges.begin(), unsused_edges.end());
 
-  // Select [n_edges - (n_nodes - 1)] edges.
+  // See std::random_shuffle behavior. Next actions is equivalent to
+  // std::random_shuffle(unsused_edges.begin(), unsused_edges.end());
+  // and select subset of last [n_edges] edges.
   n_edges -= n_nodes - 1;
   for (unsigned i = 0; i < n_edges; ++i) {
     edge = &edges->operator[](i + n_nodes - 1);
     edge->weight = RandWeight(min_weight, max_weight);
-    edge->nodes[0] = nodes_map[unsused_edges[i].first];
-    edge->nodes[1] = nodes_map[unsused_edges[i].second];
+
+    unsigned edge_idx = max_n_edges - 1 - i;
+    unsigned idx = rand() % (edge_idx + 1);
+    edge->nodes[0] = nodes_map[unsused_edges[idx].first];
+    edge->nodes[1] = nodes_map[unsused_edges[idx].second];
+    unsused_edges[idx] = unsused_edges[edge_idx];
   }
 }
 
