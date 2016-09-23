@@ -18,6 +18,7 @@ const char* kCmdParams =
     "{ boruvka | boruvka | false  | Using Boruvka's method }"
     "{ kruskal | kruskal | false | Using Kruskal's method }"
     "{ prim    | prim | false | Using Prim's method }"
+    "{ rng | random_seed | 324 | Random seed }"
     "{ q | quiet | false | Output only times of processing, if true }";
 
 void Measurement(void (*Method)(unsigned, const std::vector<Edge>&,
@@ -40,6 +41,8 @@ int main(int argc, char** argv) {
   const bool use_kruskal = parser.get<bool>("kruskal");
   const bool use_prim = parser.get<bool>("prim");
   const bool is_quiet = parser.get<bool>("quiet");
+
+  srand(parser.get<unsigned>("random_seed"));
 
   unsigned min_n_edges, max_n_edges;
   GraphGenerator::GetNumberOfEdgesLimits(n_nodes, &min_n_edges, &max_n_edges);
