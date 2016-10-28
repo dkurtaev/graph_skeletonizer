@@ -1,6 +1,7 @@
 #include <sys/time.h>
 
 #include <iostream>
+#include <string>
 
 #include "opencv2/opencv.hpp"
 
@@ -19,6 +20,7 @@ const char* kCmdParams =
     "{ kruskal | kruskal | false | Using Kruskal's method }"
     "{ prim    | prim | false | Using Prim's method }"
     "{ rng | random_seed | 324 | Random seed }"
+    "{ i | input_file | "" | Graph definition input file }"
     "{ q | quiet | false | Output only times of processing, if true }";
 
 void Measurement(void (*Method)(unsigned, const std::vector<Edge>&,
@@ -33,33 +35,45 @@ int main(int argc, char** argv) {
     return 0;
   }
 
-  const unsigned n_nodes = parser.get<unsigned>("number_nodes");
-  const unsigned n_edges = parser.get<unsigned>("number_edges");
+  unsigned n_nodes = parser.get<unsigned>("number_nodes");
+  unsigned n_edges = parser.get<unsigned>("number_edges");
   const float min_weight = parser.get<float>("min_weight");
   const float max_weight = parser.get<float>("max_weight");
   const bool use_boruvka = parser.get<bool>("boruvka");
   const bool use_kruskal = parser.get<bool>("kruskal");
   const bool use_prim = parser.get<bool>("prim");
   const bool is_quiet = parser.get<bool>("quiet");
-
-  srand(parser.get<unsigned>("random_seed"));
-
-  unsigned min_n_edges, max_n_edges;
-  GraphGenerator::GetNumberOfEdgesLimits(n_nodes, &min_n_edges, &max_n_edges);
-  if (n_edges < min_n_edges || max_n_edges < n_edges) {
-    if (!is_quiet) {
-      std::cout << "For graph with " << n_nodes << " nodes number of edges "
-                << "should be in [" << min_n_edges << ", " << max_n_edges << "]"
-                << std::endl;
-    }
-    return 1;
-  }
+  const std::string input_file = parser.get<std::string>("input_file");
 
   std::vector<Edge> edges;
-  GraphGenerator::GenGraph(n_nodes, n_edges, min_weight, max_weight, &edges);
-  if (!is_quiet) {
-    std::cout << "Generated graph with " << n_nodes << " nodes and "
-              << n_edges << " edges." << std::endl;
+  if (input_file == "") {
+    srand(parser.get<unsigned>("random_seed"));
+
+    unsigned min_n_edges, max_n_edges;
+    GraphGenerator::GetNumberOfEdgesLimits(n_nodes, &min_n_edges, &max_n_edges);
+    if (n_edges < min_n_edges || max_n_edges < n_edges) {
+      if (!is_quiet) {
+        std::cout << "For graph with " << n_nodes << " nodes number of edges "
+                  << "should be in [" << min_n_edges << ", " << max_n_edges << "]"
+                  << std::endl;
+      }
+      return 1;
+    }
+
+    GraphGenerator::GenGraph(n_nodes, n_edges, min_weight, max_weight, &edges);
+    if (!is_quiet) {
+      std::cout << "Generated graph with " << n_nodes << " nodes and "
+                << n_edges << " edges." << std::endl;
+    }
+  } else {
+    Graph gr(input_file);
+    gr.GetEdges(&edges);
+    n_nodes = gr.GetNumberNodes();
+    n_edges = edges.size();
+    if (!is_quiet) {
+      std::cout << "Readen graph with " << n_nodes << " nodes and "
+                << n_edges << " edges." << std::endl;
+    }
   }
 
   if (use_boruvka) {
